@@ -1,0 +1,10 @@
+extrai_clausulas\SujeitoRelacaoArgumentos.class
+extrai_clausulas\SujeitoRelacao.class
+extrai_clausulas\Token.class
+extrai_clausulas\Argumento.class
+extrai_clausulas\SimplificaTriplasArg.class
+extrai_clausulas\Teste.class
+extrai_clausulas\Extracao1.class
+extrai_clausulas\Main.class
+extrai_clausulas\Sentence.class
+pre_processamento\PreProcessamento.class

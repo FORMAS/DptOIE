@@ -1,0 +1,24 @@
+1	A	_	DET	DET	_	2	det	_	_
+2	Nina	_	PNOUN	PNOUN	_	5	nsubj	_	_
+3	é	_	VERB	VERB	_	5	cop	_	_
+4	a	_	DET	DET	_	5	det	_	_
+5	chance	_	NOUN	NOUN	_	0	root	_	_
+6	de	_	ADP	ADP	_	8	mark	_	_
+7	ele	_	PRON	PRON	_	8	nsubj	_	_
+8	ser	_	VERB	VERB	_	5	nmod	_	_
+9	feliz	_	ADJ	ADJ	_	8	xcomp:adj	_	_
+10	.	_	.	.	_	5	punct	_	_
+
+1	Ver	_	VERB	VERB	_	0	root	_	_
+2	também	_	ADV	ADV	_	1	advmod	_	_
+3	a	_	DET	DET	_	4	det	_	_
+4	lista	_	NOUN	NOUN	_	1	obj	_	_
+5	de	_	ADP	ADP	_	6	case	_	_
+6	entidades	_	NOUN	NOUN	_	4	nmod	_	_
+7	que	_	PRON	PRON	_	9	nsubj	_	_
+8	tenham	_	AUX	AUX	_	9	aux	_	_
+9	emitido	_	VERB	VERB	_	6	acl:relcl	_	_
+10	selos	_	NOUN	NOUN	_	9	obj	_	_
+11	postais	_	ADJ	ADJ	_	10	amod	_	_
+12	.	_	.	.	_	1	punct	_	_
+
