@@ -36,4 +36,4 @@ java -jar DptOIE.jar -sentencesIN 'sentences_file_path' -dependencyTreeIN 'depen
 
 ## Authors
 * Leandro Souza de Oliveira
-* [Daniela Barreiro Claro](http://formas.ufba.br)
+* [Daniela Barreiro Claro](http://formas.ufba.br/dclaro/)
