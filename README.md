@@ -1,9 +1,15 @@
-# DptOIE
+# DptOIE and Models
 DptOIE method uses the Dependence Parser and Part of Speech Tagger models trained with Stanford CoreNLP.
 
 This work is described in the paper **"DptOIE: A Portuguese Open Information Extraction system based on Dependency Analysis"** under submission at Computer Speech and Language Journal.
+
+## This project contains:
+- DptOIE's source code: An Open Information Extraction for Portuguese language.
+- Dependenct Parser and Part of Speech Tagger models trained with Stanford CoreNLP.
+
 ## Prerequisites
 [Dataset CETEN200 e WIKI200](https://drive.google.com/open?id=18o4vvQOCZyfhA31yJQ0RxRx7KifDeL-9)
+
 ## How to use
 To run the DptOIE
 ```
