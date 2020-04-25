@@ -1,11 +1,13 @@
 package extrai_clausulas;
+//
+//import java.io.BufferedOutputStream;
+//import java.io.FileOutputStream;
+//import java.io.IOException;
+//import java.io.OutputStream;
+//import java.io.OutputStreamWriter;
+//import java.nio.charset.Charset;
 
-import java.io.BufferedOutputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.nio.charset.Charset;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -26,7 +28,7 @@ public class Extracao1 {
 
     }
 
-    public void realizaExtracao() throws CloneNotSupportedException, IOException {
+    public void realizaExtracao(boolean CC, boolean SC, int appositive) throws CloneNotSupportedException, IOException {
         /*
          Módulos de extração
          Sujeito
@@ -45,17 +47,25 @@ public class Extracao1 {
          4 - substituição do aposto por transitividade (ACHO QUE ESSE NÃO USOU)
          6 - decomposição {Identificada no momento da extração}
          */
-        buscaSujeito();
+        buscaSujeito(SC);
 //        moduloProcessamentoConjuncoesCoordenativasSujeito();
         buscaRelacao();
-        moduloProcessamentoConjuncoesCoordenativasRelacao();
+        if (CC == true) {
+            moduloProcessamentoConjuncoesCoordenativasRelacao();
+        }
         carregaSRA();
-        extraiClausulas();
-        extraiClausulasQuebradas();
-        moduloProcessamentoConjuncoesCoordenativasArg2();
-        moduloExtracaoAposto();
+        extraiClausulas(SC);
+        extraiClausulasQuebradas(SC);
+        if (CC == true) {
+            moduloProcessamentoConjuncoesCoordenativasArg2();
+        }
+        if (appositive == 1 || appositive == 2) {
+            moduloExtracaoAposto();
+        }
         adicionaArgumentoMarkAntesSujeito();
-        moduloSubstituiApostoTransitividade(this.sujeitoRelacaoArgumentos);
+        if (appositive == 2) {
+            moduloSubstituiApostoTransitividade(this.sujeitoRelacaoArgumentos);
+        }
         moduloExtracaoVerboLigacao();
         eliminaPreposicaoAntesSujeito();
 //        removeHifenFinalRelacaoEAdicionaInicioArgumento(this.sujeitoRelacaoArgumentos);
@@ -68,7 +78,7 @@ public class Extracao1 {
     }
 
     //Essa função faz argumentoVerboLigacao busca em profundidade para detectar os elementos do sujeito
-    public void buscaSujeito() {
+    public void buscaSujeito(boolean SC) {
         Boolean[] vetorBooleanoTokensVisitados = new Boolean[sentence.getTamanhoSentenca()];//Vetor que será usado para verifica se token já foi visitado
         Arrays.fill(vetorBooleanoTokensVisitados, Boolean.FALSE);
         Stack<Token> pilhaAuxiliar = new Stack<>();//Pilha usada para fazer argumentoVerboLigacao busca em profundidade
@@ -117,7 +127,9 @@ public class Extracao1 {
                 indiceArraySujeitoRelacao++;
             }
         }
-        moduloProcessamentoPronomesRelativos(indiceArraySujeitoRelacao);
+        if (SC) {
+            moduloProcessamentoPronomesRelativos(indiceArraySujeitoRelacao);
+        }
     }
 
     public void moduloProcessamentoConjuncoesCoordenativasSujeito() {
@@ -625,7 +637,7 @@ public class Extracao1 {
         }
     }
 
-    public void extraiClausulas() {
+    public void extraiClausulas(boolean SC) {
         Boolean[] vetorBooleanoTokensVisitados = new Boolean[sentence.getTamanhoSentenca()];//Vetor que será usado para verifica se token já foi visitado
         Arrays.fill(vetorBooleanoTokensVisitados, Boolean.FALSE);
         Stack<Token> pilhaAuxiliar = new Stack<>();//Pilha usada para fazer argumentoVerboLigacao busca em profundidade
@@ -686,7 +698,7 @@ public class Extracao1 {
                             }
                         } else {
                             /*Nesse caso de ccomp e advcl com sujeito extrai direto*/
-                            if ((tokenFilhoSujeitoRelacao.getDeprel().equals("ccomp") && verificaTokenFilhoSujeito(tokenFilhoSujeitoRelacao)) || (tokenFilhoSujeitoRelacao.getDeprel().equals("advcl") && verificaTokenFilhoSujeito(tokenFilhoSujeitoRelacao))) {
+                            if ((SC == true) && ((tokenFilhoSujeitoRelacao.getDeprel().equals("ccomp") && verificaTokenFilhoSujeito(tokenFilhoSujeitoRelacao)) || (tokenFilhoSujeitoRelacao.getDeprel().equals("advcl") && verificaTokenFilhoSujeito(tokenFilhoSujeitoRelacao)))) {
                                 realizaApontamentoArgumento(argumento, tokenFilhoSujeitoRelacao);
                                 sra.addArg2(argumento);
                                 flagExtracao = false;
@@ -724,7 +736,7 @@ public class Extracao1 {
                                         }
                                     }
                                 } else {
-                                    if ((tokenPilha.getDeprel().equals("ccomp") && verificaTokenFilhoSujeito(tokenPilha)) || (tokenPilha.getDeprel().equals("advcl") && verificaTokenFilhoSujeito(tokenPilha))) {
+                                    if ((SC == true) && ((tokenPilha.getDeprel().equals("ccomp") && verificaTokenFilhoSujeito(tokenPilha)) || (tokenPilha.getDeprel().equals("advcl") && verificaTokenFilhoSujeito(tokenPilha)))) {
                                         realizaApontamentoArgumento(argumento, tokenPilha);
                                         sra.addArg2(argumento);
                                         flagExtracao = false;
@@ -782,7 +794,7 @@ public class Extracao1 {
 //        moduloExtracaoVerboLigacao();
     }
 
-    public void extraiClausulasQuebradas() {
+    public void extraiClausulasQuebradas(boolean SC) {
         Boolean[] vetorBooleanoTokensVisitados = new Boolean[sentence.getTamanhoSentenca()];//Vetor que será usado para verifica se token já foi visitado
         Arrays.fill(vetorBooleanoTokensVisitados, Boolean.FALSE);
         Stack<Token> pilhaAuxiliar = new Stack<>();//Pilha usada para fazer argumentoVerboLigacao busca em profundidade
@@ -862,7 +874,7 @@ public class Extracao1 {
                                     qtdFilhosIdMaiorRaizPercorridosQueNaoSejaAdvMod++;
                                 } else {
                                     /*Nesse caso de ccomp e advcl com sujeito extrai direto*/
-                                    if ((tokenFilhoSujeitoRelacao.getDeprel().equals("ccomp") && verificaTokenFilhoSujeito(tokenFilhoSujeitoRelacao)) || (tokenFilhoSujeitoRelacao.getDeprel().equals("advcl") && verificaTokenFilhoSujeito(tokenFilhoSujeitoRelacao))) {
+                                    if ((SC == true) && ((tokenFilhoSujeitoRelacao.getDeprel().equals("ccomp") && verificaTokenFilhoSujeito(tokenFilhoSujeitoRelacao)) || (tokenFilhoSujeitoRelacao.getDeprel().equals("advcl") && verificaTokenFilhoSujeito(tokenFilhoSujeitoRelacao)))) {
                                         qtdFilhosIdMaiorRaizPercorridosQueNaoSejaAdvMod++;
                                         realizaApontamentoArgumento(argumentoQuebrado, tokenFilhoSujeitoRelacao);
                                         sra.addArg2(argumentoQuebrado);
@@ -901,7 +913,7 @@ public class Extracao1 {
                                         }
                                     }
                                 } else {
-                                    if ((tokenPilha.getDeprel().equals("ccomp") && verificaTokenFilhoSujeito(tokenPilha)) || (tokenPilha.getDeprel().equals("advcl") && verificaTokenFilhoSujeito(tokenPilha))) {
+                                    if ((SC == true) && ((tokenPilha.getDeprel().equals("ccomp") && verificaTokenFilhoSujeito(tokenPilha)) || (tokenPilha.getDeprel().equals("advcl") && verificaTokenFilhoSujeito(tokenPilha)))) {
                                         realizaApontamentoArgumento(argumentoQuebrado, tokenPilha);
                                         sra.addArg2(argumentoQuebrado);
                                         flagExtracao = false;

@@ -40,9 +40,9 @@ import java.io.FileWriter;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+//import java.nio.file.Files;
+//import java.nio.file.Path;
+//import java.nio.file.Paths;
 import java.util.ArrayList;
 
 /**
@@ -70,14 +70,14 @@ public class PreProcessamento {
         sentencasSemProcessamento = new ArrayList<>();
         tokensSentencasSemProcessamento = new ArrayList<>();
 
-        diretorioModelos = "pt-models\\";
-        diretorioSaidaTokenizerPosDp = "saida\\";
+        diretorioModelos = "pt-models" + File.separator;
+        diretorioSaidaTokenizerPosDp = "output" + File.separator;
         caminhoModeloDP = diretorioModelos + "pt-dep-parser.gz";
         caminhoModeloPos = diretorioModelos + "pt-pos-tagger.model";
         arquivoTextoEntrada = diretorioModelos + "testes.txt";
-        arquivoSentencasTokenizadas = diretorioSaidaTokenizerPosDp + "sentencas_tokenizadas.txt";
-        arquivoSentencasEntradaDPConll = diretorioSaidaTokenizerPosDp + "entrada_para_DP_testes.txt";
-        arquivoSaidaDP = diretorioSaidaTokenizerPosDp + "saidaDP_testes.conll";
+        arquivoSentencasTokenizadas = diretorioSaidaTokenizerPosDp + "tokenized_sentences";
+        arquivoSentencasEntradaDPConll = diretorioSaidaTokenizerPosDp + "imput_DP.txt";
+        arquivoSaidaDP = diretorioSaidaTokenizerPosDp + "output_DP.conll";
     }
 
     public static void main(String Args[]) throws IOException {
@@ -90,14 +90,13 @@ public class PreProcessamento {
         preProcessamento.dependencyParser(preProcessamento.caminhoModeloDP, preProcessamento.arquivoSentencasEntradaDPConll);
 //        String sentenca = "Traduzindo em termos simples: nenhum político gosta de colocar azeitona en a empada de seus adversários .";
 //        preProcessamento.retornaPos(preProcessamento.caminhoModeloPos, sentenca);
-
     }
 
 
     /*Esta função gera um arquivo com sentenças tokenizadas separadas por espaço e armazena as sentenças brutas em uma
      variável*/
     public void retornaTokensSentencasSeparadoPorEspaco(String caminhoArquivoTexto) throws IOException {
-        System.out.println("Criando arquivo de sentenças tokenizadas...");
+        System.out.println("Creating Tokenized Sentences File...");
         /*Ler arquivo de uma vez só*/
 //        Path caminhoArquivo = Paths.get(caminhoArquivoTexto);
 
@@ -121,7 +120,7 @@ public class PreProcessamento {
                         "tokenize.language", "es",
                         "tokenize.options", "ptb3Escaping=false"
                 ));
-        for(String dados : arraySentencas){
+        for (String dados : arraySentencas) {
             // read some text in the text variable
             Annotation document = new Annotation(dados);
             // Executa todos os anotadores passados na função pipeline
@@ -169,7 +168,7 @@ public class PreProcessamento {
         } catch (IOException ex) {
             ex.printStackTrace();
         }
-        System.out.println("Arquivo de sentenças tokenizadas criado");
+        System.out.println("Tokenized sentence file created");
     }
 
     /*Função que retorna POS de uma sentença*/
@@ -189,22 +188,30 @@ public class PreProcessamento {
     }
 
     public void dependencyParser(String modelo, String arquivoEntradaDP) throws FileNotFoundException {
-        System.out.println("Executando Dependency Parser...");
         Properties props = new Properties();
         String saidaDP = arquivoSaidaDP;
         DependencyParser dp = new DependencyParser(props);
+        System.out.println("Loading Dependency Parser in memory...");
         //Carrega modelo treinado
         dp.loadModelFile(modelo);
+        System.out.println("Executing Dependency Parser from Sentences...");
         //Gera saída no formato conll e mostra resultados LAS se for um arquivo de teste
         /*Foi utilizada a função de teste do DP porque ainda não encontrei uma forma de colocar a saída em
          conll de outra forma.*/
         dp.testCoNLL(arquivoEntradaDP, saidaDP);
-        System.out.println("Execução do Dependency Parser finalizada.");
+        System.out.println("Execution of Dependency Parser completed.");
     }
 
     /*Função que recebe as sentenças(separadas por quebra de linha) tokenizadas(separadas por vírgula)*/
     public void geraEntradaConllParaDependencyParser(String caminhoModeloPos, String sentencasTokenizadas) throws FileNotFoundException, IOException {
-        System.out.println("Criando arquivo de entrada para o DependencyParser...");
+
+        /*Configurações do POS tagger*/
+        Properties props = new Properties();
+        String separador = "___";
+        props.setProperty("tagSeparator", separador);
+        MaxentTagger tagger = new MaxentTagger(caminhoModeloPos, props);
+
+        System.out.println("Creating input file for Dependency Parser...");
         String linhaPadrãoConll = "";
         OutputStreamWriter writer = new OutputStreamWriter(
                 new FileOutputStream(arquivoSentencasEntradaDPConll),
@@ -216,7 +223,13 @@ public class PreProcessamento {
         int index = 0;
         while ((sentenca = br.readLine()) != null) {
             String[] tokensSentenca = sentenca.split(" ");
-            ArrayList<String> posSentenca = retornaPos(caminhoModeloPos, sentenca);
+            ArrayList<String> posSentenca = new ArrayList<>();
+            String TokenEposJuntosComOSeparador = tagger.tagTokenizedString(sentenca);
+            String[] posSeparadoPorTokens = TokenEposJuntosComOSeparador.split(" ");
+            for (String token : posSeparadoPorTokens) {
+                posSentenca.add(token.split(separador)[1]);
+            }
+
 //            Boolean[] tokensSemEspacoFinal = retornaVetorBooleanoDosTokensSemEspacoFinal(this.tokensSentencasSemProcessamento.get(index), this.sentencasSemProcessamento.get(index));
             for (int i = 0; i < tokensSentenca.length; i++) {
                 linhaPadrãoConll = retornaLinhaArquivoConll(i + 1, tokensSentenca, posSentenca/*, tokensSemEspacoFinal[i]*/);
@@ -228,7 +241,7 @@ public class PreProcessamento {
         br.close();
         writer.flush();
         writer.close();
-        System.out.println("Arquivo de entrada para o DependencyParser criado");
+        System.out.println("Input file for DependencyParser created.");
     }
 
     public String retornaLinhaArquivoConll(int idToken, String[] tokens, ArrayList<String> pos/*, boolean flagIndicaCaractereAposTokenEspacoOuNao*/) {
@@ -514,6 +527,86 @@ public class PreProcessamento {
             return null;
         }
 
+    }
+
+    public ArrayList<String> getSentencasSemProcessamento() {
+        return sentencasSemProcessamento;
+    }
+
+    public void setSentencasSemProcessamento(ArrayList<String> sentencasSemProcessamento) {
+        this.sentencasSemProcessamento = sentencasSemProcessamento;
+    }
+
+    public ArrayList<String[]> getTokensSentencasSemProcessamento() {
+        return tokensSentencasSemProcessamento;
+    }
+
+    public void setTokensSentencasSemProcessamento(ArrayList<String[]> tokensSentencasSemProcessamento) {
+        this.tokensSentencasSemProcessamento = tokensSentencasSemProcessamento;
+    }
+
+    public String getDiretorioModelos() {
+        return diretorioModelos;
+    }
+
+    public void setDiretorioModelos(String diretorioModelos) {
+        this.diretorioModelos = diretorioModelos;
+    }
+
+    public String getDiretorioSaidaTokenizerPosDp() {
+        return diretorioSaidaTokenizerPosDp;
+    }
+
+    public void setDiretorioSaidaTokenizerPosDp(String diretorioSaidaTokenizerPosDp) {
+        this.diretorioSaidaTokenizerPosDp = diretorioSaidaTokenizerPosDp;
+    }
+
+    public String getArquivoTextoEntrada() {
+        return arquivoTextoEntrada;
+    }
+
+    public void setArquivoTextoEntrada(String arquivoTextoEntrada) {
+        this.arquivoTextoEntrada = arquivoTextoEntrada;
+    }
+
+    public String getArquivoSentencasTokenizadas() {
+        return arquivoSentencasTokenizadas;
+    }
+
+    public void setArquivoSentencasTokenizadas(String arquivoSentencasTokenizadas) {
+        this.arquivoSentencasTokenizadas = arquivoSentencasTokenizadas;
+    }
+
+    public String getArquivoSentencasEntradaDPConll() {
+        return arquivoSentencasEntradaDPConll;
+    }
+
+    public void setArquivoSentencasEntradaDPConll(String arquivoSentencasEntradaDPConll) {
+        this.arquivoSentencasEntradaDPConll = arquivoSentencasEntradaDPConll;
+    }
+
+    public String getArquivoSaidaDP() {
+        return arquivoSaidaDP;
+    }
+
+    public void setArquivoSaidaDP(String arquivoSaidaDP) {
+        this.arquivoSaidaDP = arquivoSaidaDP;
+    }
+
+    public String getCaminhoModeloPos() {
+        return caminhoModeloPos;
+    }
+
+    public void setCaminhoModeloPos(String caminhoModeloPos) {
+        this.caminhoModeloPos = caminhoModeloPos;
+    }
+
+    public String getCaminhoModeloDP() {
+        return caminhoModeloDP;
+    }
+
+    public void setCaminhoModeloDP(String caminhoModeloDP) {
+        this.caminhoModeloDP = caminhoModeloDP;
     }
 
     /*Esta função comentada ensina a usar o string args, DP e POS*/

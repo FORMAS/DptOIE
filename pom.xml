@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <parent>
-        <groupId>com.kohlschutter.boilerpipe</groupId>
-        <artifactId>boilerpipe-parent</artifactId>
-        <version>2.0-SNAPSHOT</version>
-    </parent>
     <groupId>com.mycompany</groupId>
     <artifactId>ExtraiClausulas</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
     <dependencies>
+      <!-- https://mvnrepository.com/artifact/com.syncthemall/boilerpipe -->
+		<dependency>
+		    <groupId>com.syncthemall</groupId>
+		    <artifactId>boilerpipe</artifactId>
+		    <version>1.2.2</version>
+		</dependency>
         <!-- https://mvnrepository.com/artifact/edu.stanford.nlp/stanford-corenlp -->
         <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-api -->
         <dependency>
@@ -26,9 +27,41 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.corenlp-3.9</groupId>
-            <artifactId>meujar</artifactId>
-            <version>1.0.0</version>
-        </dependency>
+		  <groupId>edu.stanford.nlp</groupId>
+		  <artifactId>stanford-corenlp</artifactId>
+		  <version>4.0.0</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/net.sourceforge.javacsv/javacsv -->
+		<dependency>
+		    <groupId>net.sourceforge.javacsv</groupId>
+		    <artifactId>javacsv</artifactId>
+		    <version>2.0</version>
+		</dependency>
     </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <configuration>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                    <archive>
+                        <manifest>
+                            <mainClass>extrai_clausulas.Main</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>make-assembly</id>
+                        <phase>package</phase>
+                        <goals>                         
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 </project>

@@ -1,29 +1,91 @@
 package extrai_clausulas;
-
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileInputStream;
+//
+//import edu.stanford.nlp.parser.nndep.DependencyParser;
+//import java.io.BufferedReader;
+//import java.io.BufferedWriter;
+//import java.io.File;
+//import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
+//import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStreamReader;
+//import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.nio.charset.Charset;
+//import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
+import pre_processamento.PreProcessamento;
 
 public class Main {
 
     public static void main(String[] args) throws IOException, CloneNotSupportedException {
+        String sentencesIn = "",
+                dependencTreeIN = "";
+        boolean CC = false,
+                SC = false;
+        int appositive = 0; /* 0 = não usa aposto
+         1 = somente aposto
+         2 = aposto + transitividade
+         */
+
+        for (int argIndex = 0; argIndex < args.length;) {
+            switch (args[argIndex]) {
+                case "-sentencesIN":
+                    sentencesIn = args[argIndex + 1];
+                    argIndex += 2;
+                    break;
+                case "-dependencyTreeIN":
+                    dependencTreeIN = args[argIndex + 1];
+                    argIndex += 2;
+                    break;
+                case "-CC":
+                    if (args[argIndex + 1].equals("true")) {
+                        CC = true;
+                    }
+                    argIndex += 2;
+                    break;
+                case "-SC":
+                    if (args[argIndex + 1].equals("true")) {
+                        SC = true;
+                    }
+                    argIndex += 2;
+                    break;
+                case "-appositive":
+                    if (args[argIndex + 1].equals("0")) {
+                        appositive = 0;
+                    } else if (args[argIndex + 1].equals("1")) {
+                        appositive = 1;
+                    } else if (args[argIndex + 1].equals("2")) {
+                        appositive = 2;
+                    }
+                    argIndex += 2;
+                    break;
+                default:
+                    throw new RuntimeException("Unknown argument " + args[argIndex]);
+            }
+        }
+        
+        if(sentencesIn.equals("") && dependencTreeIN.equals("")){
+            throw new RuntimeException("Could not find file with sentences");
+        }
+
         int index = 0;
         Main classeMain = new Main();
         Sentence carregaSentencasFormatoConll = new Sentence();
-        ArrayList<Sentence> sentences = new ArrayList<>(1000);
-//        String caminhoTreebankFileIn = "C:\\Users\\Leandro\\Desktop\\arquivos_treino_maltparser_datasets\\sentencas_teste_dependentIE2.0";
-        //String caminhoTreebankFileIn = "C:\\Users\\Leandro\\Desktop\\arquivos_treino_maltparser_datasets\\Treebank 2.0 formatado para dependency viewer.conllu.conllu";
-//        String caminhoTreebankFileIn = "C:\\Users\\Leandro\\Documents\\boilerpipe-master\\ExtraiClausulas\\saida\\ceten-200.conll";
-        String caminhoTreebankFileIn = "C:\\Users\\Leandro\\Documents\\boilerpipe-master\\ExtraiClausulas\\saida\\saidaDP_testes.conll";
+        ArrayList<Sentence> sentences = new ArrayList<>();
+//        String caminhoTreebankFileIn = "C:\\Users\\Leandro\\Documents\\boilerpipe-master\\ExtraiClausulas\\saida\\saidaDP_testes.conll";
+        String caminhoTreebankFileIn;
+        if (dependencTreeIN.equals("")) {
+            PreProcessamento preProcessamento = new PreProcessamento();
+            /*Gera arquivo com setenças tokenizadas separadas por espaço. Cada linha do arquivo corresponde a uma sentença*/
+            preProcessamento.retornaTokensSentencasSeparadoPorEspaco(sentencesIn);
+            /*Gera arquivo conll para dar entrada ao Dependency parser*/
+            preProcessamento.geraEntradaConllParaDependencyParser(preProcessamento.getCaminhoModeloPos(), preProcessamento.getArquivoSentencasTokenizadas());
+            /*Executa Dependency Parser*/
+            preProcessamento.dependencyParser(preProcessamento.getCaminhoModeloDP(), preProcessamento.getArquivoSentencasEntradaDPConll());
+            caminhoTreebankFileIn = preProcessamento.getArquivoSaidaDP();
+        } else {
+            caminhoTreebankFileIn = dependencTreeIN;
+        }
         carregaSentencasFormatoConll.loadData(caminhoTreebankFileIn, sentences);
         for (Sentence s : sentences) {
             s.mapeamentoSentences();
@@ -31,15 +93,15 @@ public class Main {
             index++;
         }
         OutputStreamWriter writer = new OutputStreamWriter(
-                new FileOutputStream("extrações_triplas_DependentIE++_arte_todos_modulos.csv")/*,
+                new FileOutputStream("extractedFactsByDpOIE.csv")/*,
          Charset.forName("UTF-8").newEncoder()*/
         );
         writer.append(" \"ID SENTENÇA\" ; \"SENTENÇA\" ; \"ID EXTRAÇÃO\" ; \"ARG1\" ; \"REL\" ; \"ARG2\" ; \"COERÊNCIA\" ; \"MINIMALIDADE\" ; \"MÓDULO SUJEITO\" ; \"MÓDULO RELAÇÃO\" ; \"MÓDULO ARG2\";" + System.lineSeparator());
 
-        for (int indiceSentenca = 0; indiceSentenca <= 10508; indiceSentenca++) {
+        for (int indiceSentenca = 0; indiceSentenca < sentences.size(); indiceSentenca++) {
             System.out.println("Índice sentença " + indiceSentenca);
             Extracao1 ex = new Extracao1(sentences.get(indiceSentenca));
-            ex.realizaExtracao();
+            ex.realizaExtracao(CC, SC, appositive);
             ex.imprimeExtracoes();
 
             String sentenca = sentences.get(indiceSentenca).toString();
@@ -135,7 +197,7 @@ public class Main {
                                     writer.append("\"" + "" + "\"" + ";" + "\"" + "" + "\"" + ";" + "\"" + indiceExtracoesQuebradas + auxColocaPontoZero + "\"" + ";" + "\"" + sujeito + "\"" + ";" + "\"" + rel + "\"" + ";" + "\"" + argumento2 + "\"" + ";" + "\"" + auxMarcaXSubExtracao + "\"" + ";" + "\"" + auxMarcaXSubExtracao + "\"" + ";" + "\"" + moduloSujeito + "\"" + ";" + "\"" + moduloRelacao + "\"" + ";" + "\"" + moduloArg2 + "\";" + System.lineSeparator());
                                     flagIndicaIncremento = true;
                                 }
-                                if((arrayIndices.size() - 1) == 0 && (flagIndicaIncremento)){
+                                if ((arrayIndices.size() - 1) == 0 && (flagIndicaIncremento)) {
                                     indiceExtracao++;
                                 }
                                 classeMain.increment(arrayIndices.get(arrayIndices.size() - 1));
