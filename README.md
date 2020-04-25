@@ -7,13 +7,14 @@ This work is described in the paper **"DptOIE: A Portuguese Open Information Ext
 - DptOIE's source code: An Open Information Extraction for Portuguese language.
 - Dependenct Parser and Part of Speech Tagger models trained with Stanford CoreNLP.
 
-## Prerequisites
-[Dataset CETEN200 e WIKI200](https://drive.google.com/open?id=18o4vvQOCZyfhA31yJQ0RxRx7KifDeL-9)
+## Prerequisites to run from source code
+- [Dataset CETEN200 e WIKI200](https://drive.google.com/open?id=18o4vvQOCZyfhA31yJQ0RxRx7KifDeL-9)
+- Insert the file **pt-dep-parser.gz** in **pt-models** directory
 
 ## How to use
-To run the DptOIE
+To run the DptOIE.jar
 ```
- java -jar DptOIE.jar -sentencesIN 'sentences_file_path'
+ java -jar DptOIE.jar -sentencesIN **sentences_file_path**
 ```
 To use the module that handles subordinate clause
 ```
