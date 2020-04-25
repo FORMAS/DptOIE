@@ -10,6 +10,7 @@ This work is described in the paper **"DptOIE: A Portuguese Open Information Ext
 ## Prerequisites to run from source code
 - [Dataset CETEN200 e WIKI200](https://drive.google.com/open?id=18o4vvQOCZyfhA31yJQ0RxRx7KifDeL-9)
 - Insert the file **pt-dep-parser.gz** in **pt-models** directory
+- Import as Maven Project in Eclipse IDE
 
 ## How to use
 To run the DptOIE.jar
