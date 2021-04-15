@@ -8,7 +8,7 @@ This work is described in the paper **"DptOIE: A Portuguese Open Information Ext
 - Dependenct Parser and Part of Speech Tagger models trained with Stanford CoreNLP.
 
 ## Prerequisites to run from source code
-- [Dataset CETEN200 e WIKI200](https://drive.google.com/open?id=18o4vvQOCZyfhA31yJQ0RxRx7KifDeL-9)
+- [Dataset CETEN200, WIKI200 and models](https://drive.google.com/file/d/11ktTybvwMBAVWch4ZKaGSkO22q_iTBKK/view?usp=sharing)
 - Insert the file **pt-dep-parser.gz** in **pt-models** directory
 - Import as Maven Project in Eclipse IDE
 
