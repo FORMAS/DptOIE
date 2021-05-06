@@ -45,3 +45,8 @@ java -jar DptOIE.jar -sentencesIN 'sentences_file_path' -dependencyTreeIN 'depen
 ## Authors
 * Leandro Souza de Oliveira
 * [Daniela Barreiro Claro](http://formas.ufba.br/dclaro/)
+
+## Cite
+* GLAUBER, R. ; CLARO, D. B. ; OLIVEIRA, L. S. . Dependency Parser on Open Information Extraction for Portuguese Texts - DptOIE and DependentIE on IberLEF. In: Iberian Languages Evaluation Forum (IberLEF 2019), 2019, Bilbao, Spain. Proceedings of the Iberian Languages Evaluation Forum (IberLEF 2019) co-located with 35th Conference of the Spanish Society for Natural Language Processing (SEPLN 2019). Bilbao: CEUR, 2019. v. 2421. p. 442-448.
+
+* Oliveira L., Claro D. B., Souza M., DptOIE: A Portuguese Open Information Extraction based on Dependency Analysis. Artificial Intelligence Review (under review)
