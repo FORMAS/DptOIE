@@ -1,4 +1,4 @@
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/FORMAS/DptOIE/blob/main/notebook/dptoie-colab.ipynb)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/FORMAS/DptOIE/blob/master/notebook/dptoie-colab.ipynb)
 
 # DptOIE and Models
 DptOIE method uses the Dependence Parser and Part of Speech Tagger models trained with Stanford CoreNLP.
