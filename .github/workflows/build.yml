@@ -13,17 +13,6 @@ jobs:
           docker create --name dptoie dptoie
           docker cp dptoie:/home/app/pt-models .
           docker cp dptoie:/usr/local/lib/DptOIE.jar ./DptOIE.jar
-      - name: export built files
-        uses: actions/upload-artifact@v3
-        with:
-         name: built-files
-         path: |
-            pt-models
-            DptOIE.jar
-  release:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
       - name: Create prerelease
         if: github.ref == 'refs/heads/build'
         uses: marvinpinto/action-automatic-releases@latest
