@@ -8,7 +8,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Build container
-        run: docker build -t --build-arg GITHUB_REPOSITORY=$GITHUB_REPOSITORY dptoie .
+        run: docker build --build-arg GITHUB_REPOSITORY=$GITHUB_REPOSITORY -t dptoie .
       - name: DptOIE_B
         run: |
           docker run -v $(pwd):/home/app dptoie -dependencyTreeIN ./datasets/ceten-200.conll
@@ -44,7 +44,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Build container
-        run: docker build -t --build-arg GITHUB_REPOSITORY=$GITHUB_REPOSITORY dptoie .
+        run: docker build --build-arg GITHUB_REPOSITORY=$GITHUB_REPOSITORY -t dptoie .
       - name: DptOIE_B
         run: |
           docker run -v $(pwd):/home/app dptoie -dependencyTreeIN ./datasets/wiki-200.conll
