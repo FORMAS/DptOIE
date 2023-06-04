@@ -1,0 +1,27 @@
+name: "pre-release"
+
+on:
+  push:
+    branches:
+      - "master"
+
+jobs:
+  pre-release:
+    name: "Pre Release"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Build container
+        run: |
+          docker build -t dptoie .
+          docker cp dptoie:/home/app/pt-models ./pt-models
+          docker cp dptoie:/usr/local/lib/DptOIE.jar ./DptOIE.jar
+          zip -r DptOIE.zip pt-models DptOIE.jar
+      - uses: marvinpinto/action-automatic-releases@latest
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          automatic_release_tag: "latest"
+          prerelease: true
+          title: "Development Build"
+          files: |
+            DptOIE.zip
