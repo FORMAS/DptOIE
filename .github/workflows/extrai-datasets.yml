@@ -1,0 +1,77 @@
+name: extrai-datasets
+
+on: [push]
+
+jobs:
+  ceten-200:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Build container
+        run: docker build -t dptoie .
+      - name: DptOIE_B
+        run: |
+          docker run -v $(pwd):/home/app dptoie -dependencyTreeIN ./datasets/ceten-200.conll
+          mv extractedFactsByDpOIE.csv ceten-200_DptOIE_B.csv
+      - name: DptOIE_B_SC
+        run: |
+          docker run -v $(pwd):/home/app dptoie -dependencyTreeIN ./datasets/ceten-200.conll
+          mv extractedFactsByDpOIE.csv ceten-200_DptOIE_B_SC.csv
+      - name: DptOIE_B_SC_A
+        run: |
+          docker run -v $(pwd):/home/app dptoie -dependencyTreeIN ./datasets/ceten-200.conll
+          mv extractedFactsByDpOIE.csv ceten-200_DptOIE_B_SC_A.csv
+      - name: DptOIE_B_SC_AT
+        run: |
+          docker run -v $(pwd):/home/app dptoie -dependencyTreeIN ./datasets/ceten-200.conll
+          mv extractedFactsByDpOIE.csv ceten-200_DptOIE_B_SC_AT.csv
+      - name: DptOIE_B_SC_AT_CC
+        run: |
+          docker run -v $(pwd):/home/app dptoie -dependencyTreeIN ./datasets/ceten-200.conll
+          mv extractedFactsByDpOIE.csv ceten-200_DptOIE_B_SC_AT_CC.csv
+      - name: ceten-200 results
+        uses: actions/upload-artifact@v3
+        with:
+          name: ceten-200
+          path: |
+            ceten-200_DptOIE_B.csv
+            ceten-200_DptOIE_B_SC.csv
+            ceten-200_DptOIE_B_SC_A.csv
+            ceten-200_DptOIE_B_SC_AT.csv
+            ceten-200_DptOIE_B_SC_AT_CC.csv
+  wiki-200:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Build container
+        run: docker build -t dptoie .
+      - name: DptOIE_B
+        run: |
+          docker run -v $(pwd):/home/app dptoie -dependencyTreeIN ./datasets/wiki-200.conll
+          mv extractedFactsByDpOIE.csv wiki-200_DptOIE_B.csv
+      - name: DptOIE_B_SC
+        run: |
+          docker run -v $(pwd):/home/app dptoie -dependencyTreeIN ./datasets/wiki-200.conll
+          mv extractedFactsByDpOIE.csv wiki-200_DptOIE_B_SC.csv
+      - name: DptOIE_B_SC_A
+        run: |
+          docker run -v $(pwd):/home/app dptoie -dependencyTreeIN ./datasets/wiki-200.conll
+          mv extractedFactsByDpOIE.csv wiki-200_DptOIE_B_SC_A.csv
+      - name: DptOIE_B_SC_AT
+        run: |
+          docker run -v $(pwd):/home/app dptoie -dependencyTreeIN ./datasets/wiki-200.conll
+          mv extractedFactsByDpOIE.csv wiki-200_DptOIE_B_SC_AT.csv
+      - name: DptOIE_B_SC_AT_CC
+        run: |
+          docker run -v $(pwd):/home/app dptoie -dependencyTreeIN ./datasets/wiki-200.conll
+          mv extractedFactsByDpOIE.csv wiki-200_DptOIE_B_SC_AT_CC.csv
+      - name: wiki-200 results
+        uses: actions/upload-artifact@v3
+        with:
+          name: wiki-200
+          path: |
+            wiki-200_DptOIE_B.csv
+            wiki-200_DptOIE_B_SC.csv
+            wiki-200_DptOIE_B_SC_A.csv
+            wiki-200_DptOIE_B_SC_AT.csv
+            wiki-200_DptOIE_B_SC_AT_CC.csv
