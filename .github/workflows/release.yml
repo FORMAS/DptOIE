@@ -14,7 +14,8 @@ jobs:
       - name: Build container
         run: |
           docker build -t dptoie .
-          docker cp dptoie:/home/app/pt-models ./pt-models
+          docker create --name dptoie dptoie
+          docker cp dptoie:/home/app/pt-models .
           docker cp dptoie:/usr/local/lib/DptOIE.jar ./DptOIE.jar
       - uses: marvinpinto/action-automatic-releases@latest
         with:
