@@ -1,0 +1,37 @@
+name: extrai-datasets
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Build container
+        run: | 
+          docker build --build-arg GITHUB_REPOSITORY=$GITHUB_REPOSITORY -t dptoie .
+          docker create --name dptoie dptoie
+          docker cp dptoie:/home/app/pt-models .
+          docker cp dptoie:/usr/local/lib/DptOIE.jar ./DptOIE.jar
+      - name: export built files
+        uses: actions/upload-artifact@v3
+        with:
+         name: built-files
+         path: |
+            pt-models
+            DptOIE.jar
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create prerelease
+        if: github.ref == 'refs/heads/master'
+        uses: marvinpinto/action-automatic-releases@latest
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          prerelease: true
+          automatic_release_tag: "latest"
+          title: "DptOIE latest"
+          files: |
+            pt-models
+            DptOIE.jar
