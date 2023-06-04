@@ -3,7 +3,7 @@ name: "pre-release"
 on:
   push:
     branches:
-      - "master"
+      - "build"
 
 jobs:
   pre-release:
@@ -16,7 +16,6 @@ jobs:
           docker build -t dptoie .
           docker cp dptoie:/home/app/pt-models ./pt-models
           docker cp dptoie:/usr/local/lib/DptOIE.jar ./DptOIE.jar
-          zip -r DptOIE.zip pt-models DptOIE.jar
       - uses: marvinpinto/action-automatic-releases@latest
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
@@ -24,4 +23,5 @@ jobs:
           prerelease: true
           title: "Development Build"
           files: |
-            DptOIE.zip
+            DptOIE.jar
+            pt-models
