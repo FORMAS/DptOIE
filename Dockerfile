@@ -1,4 +1,7 @@
 FROM maven:3.8.2-jdk-11-slim AS build
+
+ARG GITHUB_REPOSITORY=FORMAS/DptOIE
+
 WORKDIR /home/app
 COPY src /home/app/src
 COPY pom.xml /home/app
@@ -8,12 +11,8 @@ RUN mvn -f /home/app/pom.xml clean package
 # Download the model
 RUN mkdir -p ./pt-models
 RUN apt-get update && apt-get install -y wget unar
-RUN export FILEID=1N2yJO8y7qodjQOroPVVN0SWSy20CuNzk && \
-    export FILENAME=DptOIE.rar && \
-    wget --load-cookies /tmp/cookies.txt "https://docs.google.com/uc?export=download&confirm=$(wget --quiet --save-cookies /tmp/cookies.txt --keep-session-cookies --no-check-certificate 'https://docs.google.com/uc?export=download&id=$FILEID' -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')&id=$FILEID" -O $FILENAME && rm -rf /tmp/cookies.txt && \
-    unar $FILENAME && rm -rf $FILENAME && \
-    mv DptOIE/pt-models/pt-dep-parser.gz ./pt-models/pt-dep-parser.gz && \
-    rm -rf DptOIE
+RUN wget https://github.com/$GITHUB_REPOSITORY/releases/download/v1.0.0/pt-dep-parser.gz && \
+    mv pt-dep-parser.gz ./pt-models/pt-dep-parser.gz
 
 FROM openjdk:11-jre-slim AS runtime
 COPY --from=build /home/app/target/ExtraiClausulas-1.0-SNAPSHOT-jar-with-dependencies.jar /usr/local/lib/DptOIE.jar
