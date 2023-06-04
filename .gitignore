@@ -2,7 +2,10 @@ target/
 extractedFactsByDpOIE.csv
 .DS_Store
 .classpath
-#.gitignore
 .project
 .settings
 pt-models/pt-dep-parser.gz
+.vscode/
+.idea/
+output/
+!output/.gitkeep
