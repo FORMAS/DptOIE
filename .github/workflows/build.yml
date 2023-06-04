@@ -1,4 +1,4 @@
-name: extrai-datasets
+name: build
 
 on: [push]
 
