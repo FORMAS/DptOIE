@@ -1,0 +1,42 @@
+name: models
+
+on: [workflow_dispatch]
+
+jobs:
+  models:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Build models
+        run: | 
+          docker build --target models --tag dptoie_models .
+          docker create --name dptoie_models dptoie_models
+          mkdir -p build
+          docker cp dptoie:/home/app/pt-models ./pt-models
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: models
+          path: |
+            pt-models/pt-dep-parser.gz
+            pt-models/pt-pos-tagger.model
+          retention-days: 1
+  release:
+    needs: models
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Download artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: models
+      - name: Create release models
+        uses: marvinpinto/action-automatic-releases@latest
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          prerelease: true
+          automatic_release_tag: "models"
+          title: "DptOIE models"
+          files: |
+            pt-models/pt-dep-parser.gz
+            pt-models/pt-pos-tagger.model
