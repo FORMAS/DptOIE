@@ -8,8 +8,8 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Build container
-        run: | 
-          docker build --build-arg GITHUB_REPOSITORY=$GITHUB_REPOSITORY --target build --tag dptoie .
+        run: |
+          DOCKER_BUILDKIT=1 docker build --build-arg GITHUB_REPOSITORY=$GITHUB_REPOSITORY --target build --tag dptoie .
           docker create --name dptoie dptoie
           mkdir -p build
           docker cp dptoie:/home/app/pt-models ./build/

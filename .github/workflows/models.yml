@@ -8,8 +8,8 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Build models
-        run: | 
-          docker build --target models --tag dptoie_models .
+        run: |
+          DOCKER_BUILDKIT=1 docker build --target models --tag dptoie_models .
           docker create --name dptoie_models dptoie_models
           mkdir -p build
           docker cp dptoie:/home/app/pt-models ./pt-models
