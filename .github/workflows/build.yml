@@ -9,7 +9,11 @@ jobs:
       - uses: actions/checkout@v3
       - name: Build container
         run: | 
-          docker build --build-arg GITHUB_REPOSITORY=$GITHUB_REPOSITORY -t dptoie .
+          docker build 
+          --build-arg GITHUB_REPOSITORY=$GITHUB_REPOSITORY
+          --target build
+          --tag dptoie
+          .
           docker create --name dptoie dptoie
           mkdir -p build
           docker cp dptoie:/home/app/pt-models ./build/
@@ -64,27 +68,27 @@ jobs:
       - name: DptOIE_B
         run: |
           cd build
-          java -jar DptOIE.jar -sentencesIN ./inputs/ceten-200.txt
+          java -jar DptOIE.jar -sentencesIN ../inputs/ceten-200.txt
           mv extractedFactsByDpOIE.csv ceten-200_DptOIE_B.csv
       - name: DptOIE_B_SC
         run: |
           cd build
-          java -jar DptOIE.jar -SC true -sentencesIN ./inputs/ceten-200.txt
+          java -jar DptOIE.jar -SC true -sentencesIN ../inputs/ceten-200.txt
           mv extractedFactsByDpOIE.csv ceten-200_DptOIE_B_SC.csv
       - name: DptOIE_B_SC_A
         run: |
           cd build
-          java -jar DptOIE.jar -SC true -appositive 1 -sentencesIN ./inputs/ceten-200.txt
+          java -jar DptOIE.jar -SC true -appositive 1 -sentencesIN ../inputs/ceten-200.txt
           mv extractedFactsByDpOIE.csv ceten-200_DptOIE_B_SC_A.csv
       - name: DptOIE_B_SC_AT
         run: |
           cd build
-          java -jar DptOIE.jar -SC true -appositive 2 -sentencesIN ./inputs/ceten-200.txt
+          java -jar DptOIE.jar -SC true -appositive 2 -sentencesIN ../inputs/ceten-200.txt
           mv extractedFactsByDpOIE.csv ceten-200_DptOIE_B_SC_AT.csv
       - name: DptOIE_B_SC_AT_CC
         run: |
           cd build
-          java -jar DptOIE.jar -SC true -appositive 2 -CC true -sentencesIN ./inputs/ceten-200.txt
+          java -jar DptOIE.jar -SC true -appositive 2 -CC true -sentencesIN ../inputs/ceten-200.txt
           mv extractedFactsByDpOIE.csv ceten-200_DptOIE_B_SC_AT_CC.csv
       - name: ceten-200 results
         uses: actions/upload-artifact@v3
@@ -117,27 +121,27 @@ jobs:
       - name: DptOIE_B
         run: |
           cd build
-          java -jar DptOIE.jar -sentencesIN ./inputs/wiki-200.txt
+          java -jar DptOIE.jar -sentencesIN ../inputs/wiki-200.txt
           mv extractedFactsByDpOIE.csv wiki-200_DptOIE_B.csv
       - name: DptOIE_B_SC
         run: |
           cd build
-          java -jar DptOIE.jar -SC true -sentencesIN ./inputs/wiki-200.txt
+          java -jar DptOIE.jar -SC true -sentencesIN ../inputs/wiki-200.txt
           mv extractedFactsByDpOIE.csv wiki-200_DptOIE_B_SC.csv
       - name: DptOIE_B_SC_A
         run: |
           cd build
-          java -jar DptOIE.jar -SC true -appositive 1 -sentencesIN ./inputs/wiki-200.txt
+          java -jar DptOIE.jar -SC true -appositive 1 -sentencesIN ../inputs/wiki-200.txt
           mv extractedFactsByDpOIE.csv wiki-200_DptOIE_B_SC_A.csv
       - name: DptOIE_B_SC_AT
         run: |
           cd build
-          java -jar DptOIE.jar -SC true -appositive 2 -sentencesIN ./inputs/wiki-200.txt
+          java -jar DptOIE.jar -SC true -appositive 2 -sentencesIN ../inputs/wiki-200.txt
           mv extractedFactsByDpOIE.csv wiki-200_DptOIE_B_SC_AT.csv
       - name: DptOIE_B_SC_AT_CC
         run: |
           cd build
-          java -jar DptOIE.jar -SC true -appositive 2 -CC true -sentencesIN ./inputs/wiki-200.txt
+          java -jar DptOIE.jar -SC true -appositive 2 -CC true -sentencesIN ../inputs/wiki-200.txt
           mv extractedFactsByDpOIE.csv wiki-200_DptOIE_B_SC_AT_CC.csv
       - name: wiki-200 results
         uses: actions/upload-artifact@v3
