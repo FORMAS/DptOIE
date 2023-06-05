@@ -23,6 +23,7 @@ jobs:
           name: build
           path: |
             build/DptOIE.zip
+          retention-days: 1
 
   release:
     needs: build
@@ -91,11 +92,11 @@ jobs:
         with:
           name: ceten-200
           path: |
-            ceten-200_DptOIE_B.csv
-            ceten-200_DptOIE_B_SC.csv
-            ceten-200_DptOIE_B_SC_A.csv
-            ceten-200_DptOIE_B_SC_AT.csv
-            ceten-200_DptOIE_B_SC_AT_CC.csv
+            build/ceten-200_DptOIE_B.csv
+            build/ceten-200_DptOIE_B_SC.csv
+            build/ceten-200_DptOIE_B_SC_A.csv
+            build/ceten-200_DptOIE_B_SC_AT.csv
+            build/ceten-200_DptOIE_B_SC_AT_CC.csv
 
   wiki-200:
     needs: build
@@ -144,8 +145,8 @@ jobs:
         with:
           name: wiki-200
           path: |
-            wiki-200_DptOIE_B.csv
-            wiki-200_DptOIE_B_SC.csv
-            wiki-200_DptOIE_B_SC_A.csv
-            wiki-200_DptOIE_B_SC_AT.csv
-            wiki-200_DptOIE_B_SC_AT_CC.csv
+            build/wiki-200_DptOIE_B.csv
+            build/wiki-200_DptOIE_B_SC.csv
+            build/wiki-200_DptOIE_B_SC_A.csv
+            build/wiki-200_DptOIE_B_SC_AT.csv
+            build/wiki-200_DptOIE_B_SC_AT_CC.csv
