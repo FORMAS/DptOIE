@@ -58,9 +58,10 @@ jobs:
           unzip DptOIE.zip -d build
           cd build
       - name: Set up JDK 11
-        uses: actions/setup-java@v2
+        uses: actions/setup-java@v3
         with:
           java-version: 11
+          distribution: 'temurin'
       - name: DptOIE_B
         run: |
           java -jar DptOIE.jar -dependencyIN ./inputs/ceten-200.txt
@@ -97,8 +98,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Build container
-        run: docker build --build-arg GITHUB_REPOSITORY=$GITHUB_REPOSITORY -t dptoie .
+      - name: Download artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: build
+      - name: Extract artifacts
+        run: |
+          unzip DptOIE.zip -d build
+          cd build
+      - name: Set up JDK 11
+        uses: actions/setup-java@v3
+        with:
+          java-version: 11
+          distribution: 'temurin'
       - name: DptOIE_B
         run: |
           java -jar DptOIE.jar -dependencyIN ./inputs/wiki-200.txt
