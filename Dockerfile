@@ -8,11 +8,15 @@ COPY pom.xml /home/app
 RUN rm -rf /home/app/target
 RUN mvn -f /home/app/pom.xml clean package
 
-# Download the model
-RUN mkdir -p ./pt-models
-RUN apt-get update && apt-get install -y wget unar
-RUN wget https://github.com/$GITHUB_REPOSITORY/releases/download/v1.0.0/pt-dep-parser.gz && \
-    mv pt-dep-parser.gz ./pt-models/pt-dep-parser.gz
+# Download 1.0.0 models
+RUN mkdir -p ./pt-models && \
+    apt-get update && apt-get install -y wget zip unzip && \
+    wget https://github.com/$GITHUB_REPOSITORY/releases/download/v1.0.0/DptOIE.zip && \
+    unzip DptOIE.zip -d v1.0.0 && \
+    mv v1.0.0/pt-models/pt-dep-parser.gz ./pt-models/pt-dep-parser.gz && \
+    mv v1.0.0/pt-models/pt-pos-tagger.model ./pt-models/pt-pos-tagger.model && \
+    rm DptOIE.zip && \
+    rm -rf v1.0.0
 
 FROM openjdk:11-jre-slim AS runtime
 COPY --from=build /home/app/target/ExtraiClausulas-1.0-SNAPSHOT-jar-with-dependencies.jar /usr/local/lib/DptOIE.jar
