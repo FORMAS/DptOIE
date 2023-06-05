@@ -13,7 +13,7 @@ jobs:
           docker create --name dptoie dptoie
           mkdir -p build
           docker cp dptoie:/home/app/pt-models ./build/
-          docker cp dptoie:/usr/local/lib/DptOIE.jar ./build/
+          docker cp dptoie:/home/app/target/ExtraiClausulas-1.0-SNAPSHOT-jar-with-dependencies.jar ./build/DptOIE.jar
           mkdir -p build/output
           cd build
           zip DptOIE.zip -r output pt-models DptOIE.jar
