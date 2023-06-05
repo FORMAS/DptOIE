@@ -2,7 +2,7 @@ FROM openjdk:8-jdk-slim AS models
 
 WORKDIR /home/app/
 
-RUN apt-get update && apt-get install -y wget zip unzip
+RUN apt-get update && apt-get install -y wget curl zip unzip
 RUN wget http://nlp.stanford.edu/software/stanford-corenlp-full-2018-02-27.zip
 RUN unzip stanford-corenlp-full-2018-02-27.zip
 RUN rm stanford-corenlp-full-2018-02-27.zip
@@ -18,7 +18,7 @@ RUN java -mx6g -cp "stanford-corenlp/*" edu.stanford.nlp.parser.nndep.Dependency
     -trainFile ud-treebanks/UD_Portuguese-BR/pt_br-ud-train.conllu \
     -devFile ud-treebanks/UD_Portuguese-BR/pt_br-ud-dev.conllu \
     -testFile ud-treebanks/UD_Portuguese-BR/pt_br-ud-test.conllu \
-    -model pt-models/pt-dep-parser.gz \
+    -model pt-models/pt-dep-parser.gz
 
 # pt-pos-tagger.model
 RUN java -mx6g -cp "stanford-corenlp/*" edu.stanford.nlp.tagger.maxent.MaxentTagger \
