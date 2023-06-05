@@ -17,11 +17,32 @@ jobs:
           mkdir -p build/output
           cd build
           zip DptOIE.zip -r output pt-models DptOIE.jar
+      - name: Upload artifacts
         uses: actions/upload-artifact@v3
         with:
           name: build
           path: |
             build/DptOIE.zip
+
+  release:
+    needs: build
+    if: github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Download artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: build
+      - name: Create release
+        uses: marvinpinto/action-automatic-releases@latest
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          prerelease: true
+          automatic_release_tag: "latest"
+          title: "DptOIE latest"
+          files: |
+            DptOIE.zip
 
   ceten-200:
     needs: build
