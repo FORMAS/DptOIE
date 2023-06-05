@@ -64,27 +64,27 @@ jobs:
       - name: DptOIE_B
         run: |
           cd build
-          java -jar DptOIE.jar -dependencyIN ./inputs/ceten-200.txt
+          java -jar DptOIE.jar -sentencesIN ./inputs/ceten-200.txt
           mv extractedFactsByDpOIE.csv ceten-200_DptOIE_B.csv
       - name: DptOIE_B_SC
         run: |
           cd build
-          java -jar DptOIE.jar -SC true -dependencyIN ./inputs/ceten-200.txt
+          java -jar DptOIE.jar -SC true -sentencesIN ./inputs/ceten-200.txt
           mv extractedFactsByDpOIE.csv ceten-200_DptOIE_B_SC.csv
       - name: DptOIE_B_SC_A
         run: |
           cd build
-          java -jar DptOIE.jar -SC true -appositive 1 -dependencyIN ./inputs/ceten-200.txt
+          java -jar DptOIE.jar -SC true -appositive 1 -sentencesIN ./inputs/ceten-200.txt
           mv extractedFactsByDpOIE.csv ceten-200_DptOIE_B_SC_A.csv
       - name: DptOIE_B_SC_AT
         run: |
           cd build
-          java -jar DptOIE.jar -SC true -appositive 2 -dependencyIN ./inputs/ceten-200.txt
+          java -jar DptOIE.jar -SC true -appositive 2 -sentencesIN ./inputs/ceten-200.txt
           mv extractedFactsByDpOIE.csv ceten-200_DptOIE_B_SC_AT.csv
       - name: DptOIE_B_SC_AT_CC
         run: |
           cd build
-          java -jar DptOIE.jar -SC true -appositive 2 -CC true -dependencyIN ./inputs/ceten-200.txt
+          java -jar DptOIE.jar -SC true -appositive 2 -CC true -sentencesIN ./inputs/ceten-200.txt
           mv extractedFactsByDpOIE.csv ceten-200_DptOIE_B_SC_AT_CC.csv
       - name: ceten-200 results
         uses: actions/upload-artifact@v3
@@ -117,27 +117,27 @@ jobs:
       - name: DptOIE_B
         run: |
           cd build
-          java -jar DptOIE.jar -dependencyIN ./inputs/wiki-200.txt
+          java -jar DptOIE.jar -sentencesIN ./inputs/wiki-200.txt
           mv extractedFactsByDpOIE.csv wiki-200_DptOIE_B.csv
       - name: DptOIE_B_SC
         run: |
           cd build
-          java -jar DptOIE.jar -SC true -dependencyIN ./inputs/wiki-200.txt
+          java -jar DptOIE.jar -SC true -sentencesIN ./inputs/wiki-200.txt
           mv extractedFactsByDpOIE.csv wiki-200_DptOIE_B_SC.csv
       - name: DptOIE_B_SC_A
         run: |
           cd build
-          java -jar DptOIE.jar -SC true -appositive 1 -dependencyIN ./inputs/wiki-200.txt
+          java -jar DptOIE.jar -SC true -appositive 1 -sentencesIN ./inputs/wiki-200.txt
           mv extractedFactsByDpOIE.csv wiki-200_DptOIE_B_SC_A.csv
       - name: DptOIE_B_SC_AT
         run: |
           cd build
-          java -jar DptOIE.jar -SC true -appositive 2 -dependencyIN ./inputs/wiki-200.txt
+          java -jar DptOIE.jar -SC true -appositive 2 -sentencesIN ./inputs/wiki-200.txt
           mv extractedFactsByDpOIE.csv wiki-200_DptOIE_B_SC_AT.csv
       - name: DptOIE_B_SC_AT_CC
         run: |
           cd build
-          java -jar DptOIE.jar -SC true -appositive 2 -CC true -dependencyIN ./inputs/wiki-200.txt
+          java -jar DptOIE.jar -SC true -appositive 2 -CC true -sentencesIN ./inputs/wiki-200.txt
           mv extractedFactsByDpOIE.csv wiki-200_DptOIE_B_SC_AT_CC.csv
       - name: wiki-200 results
         uses: actions/upload-artifact@v3
