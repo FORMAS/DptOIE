@@ -4,8 +4,9 @@ extractedFactsByDpOIE.csv
 .classpath
 .project
 .settings
-pt-models/pt-dep-parser.gz
 .vscode/
 .idea/
-output/
+output/*
 !output/.gitkeep
+pt-models/*
+!pt-models/.gitkeep
