@@ -1,35 +1,55 @@
-name: models
+name: train_models
 
 on: [workflow_dispatch]
 
 jobs:
-  models:
+  dep_parser:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - name: Build models
         run: |
-          DOCKER_BUILDKIT=1 docker build --target models --tag dptoie_models .
+          DOCKER_BUILDKIT=1 docker build --target train_model_dep_parser --tag dptoie_models .
           docker create --name dptoie_models dptoie_models
           mkdir -p build
           docker cp dptoie:/home/app/pt-models ./pt-models
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: models
+          name: dep_parser
           path: |
             pt-models/pt-dep-parser.gz
-            pt-models/pt-pos-tagger.model
           retention-days: 1
-  release:
-    needs: models
+  pos_tagger:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Download artifacts
+      - name: Build models
+        run: |
+          DOCKER_BUILDKIT=1 docker build --target train_model_pos_tagger --tag dptoie_models .
+          docker create --name dptoie_models dptoie_models
+          mkdir -p build
+          docker cp dptoie:/home/app/pt-models ./pt-models
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: pos_tagger
+          path: |
+            pt-models/pt-pos-tagger.model
+          retention-days: 1
+  release:
+    needs: [dep_parser, pos_tagger]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Download dep_parser
         uses: actions/download-artifact@v3
         with:
-          name: models
+          name: dep_parser
+      - name: Download pos_tagger
+        uses: actions/download-artifact@v3
+        with:
+          name: pos_tagger
       - name: Create release models
         uses: marvinpinto/action-automatic-releases@latest
         with:

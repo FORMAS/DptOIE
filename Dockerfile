@@ -1,4 +1,4 @@
-FROM openjdk:8-jdk-slim AS models
+FROM openjdk:8-jdk-slim AS setup_models
 
 WORKDIR /home/app/
 
@@ -13,19 +13,42 @@ RUN rm ud-treebanks-v2.1.tgz
 RUN mv ud-treebanks-v2.1 ud-treebanks
 RUN mkdir -p ./pt-models
 
-# pt-dep-parser.gz
+FROM openjdk:8-jdk-slim AS train_model_dep_parser
+
+WORKDIR /home/app/
+
+COPY --from=setup_models /home/app/ud-treebanks /home/app/ud-treebanks
+COPY --from=setup_models /home/app/stanford-corenlp /home/app/stanford-corenlp
+
+RUN mkdir -p ./pt-models
 RUN java -mx6g -cp "stanford-corenlp/*" edu.stanford.nlp.parser.nndep.DependencyParser \
     -trainFile ud-treebanks/UD_Portuguese-BR/pt_br-ud-train.conllu \
     -devFile ud-treebanks/UD_Portuguese-BR/pt_br-ud-dev.conllu \
     -testFile ud-treebanks/UD_Portuguese-BR/pt_br-ud-test.conllu \
-    -model pt-models/pt-dep-parser.gz
+    -model pt-models/pt-dep-parser.gz \
+    -trainingThreads 2
 
-# pt-pos-tagger.model
+RUN rm -rf ud-treebanks
+RUN rm -rf stanford-corenlp
+
+FROM openjdk:8-jdk-slim AS train_model_pos_tagger
+
+WORKDIR /home/app/
+
+COPY --from=setup_models /home/app/ud-treebanks /home/app/ud-treebanks
+COPY --from=setup_models /home/app/stanford-corenlp /home/app/stanford-corenlp
+
+RUN mkdir -p ./pt-models
 RUN java -mx6g -cp "stanford-corenlp/*" edu.stanford.nlp.tagger.maxent.MaxentTagger \
-    -trainFile ud-treebanks/UD_Portuguese-BR/pt_br-ud-train.conllu \
+    -trainFile format=TREES,ud-treebanks/UD_Portuguese-BR/pt_br-ud-train.conllu \
     -devFile ud-treebanks/UD_Portuguese-BR/pt_br-ud-dev.conllu \
     -testFile ud-treebanks/UD_Portuguese-BR/pt_br-ud-test.conllu \
-    -model pt-models/pt-pos-tagger.model
+    -model pt-models/pt-pos-tagger.model \
+    -arch generic \
+    -nthreads 2
+
+RUN rm -rf ud-treebanks
+RUN rm -rf stanford-corenlp
 
 FROM maven:3.8.2-jdk-8-slim AS build
 
