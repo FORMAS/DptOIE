@@ -9,10 +9,10 @@ jobs:
       - uses: actions/checkout@v3
       - name: Build models
         run: |
-          DOCKER_BUILDKIT=1 docker build --target train_model_dep_parser --tag dptoie_models .
-          docker create --name dptoie_models dptoie_models
+          DOCKER_BUILDKIT=1 docker build --target train_model_dep_parser --tag train_model_dep_parser .
+          docker create --name train_model_dep_parser train_model_dep_parser
           mkdir -p build
-          docker cp dptoie:/home/app/pt-models ./pt-models
+          docker cp train_model_dep_parser:/home/app/pt-models ./pt-models
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
         with:
@@ -26,10 +26,10 @@ jobs:
       - uses: actions/checkout@v3
       - name: Build models
         run: |
-          DOCKER_BUILDKIT=1 docker build --target train_model_pos_tagger --tag dptoie_models .
-          docker create --name dptoie_models dptoie_models
+          DOCKER_BUILDKIT=1 docker build --target train_model_pos_tagger --tag train_model_pos_tagger .
+          docker create --name train_model_pos_tagger train_model_pos_tagger
           mkdir -p build
-          docker cp dptoie:/home/app/pt-models ./pt-models
+          docker cp train_model_pos_tagger:/home/app/pt-models ./pt-models
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
         with:
