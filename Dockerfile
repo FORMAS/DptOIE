@@ -45,6 +45,7 @@ RUN java -mx6g -cp "stanford-corenlp/*" edu.stanford.nlp.tagger.maxent.MaxentTag
     -testFile ud-treebanks/UD_Portuguese-BR/pt_br-ud-test.conllu \
     -model pt-models/pt-pos-tagger.model \
     -arch generic \
+    -lang portuguese \
     -nthreads 2
 
 RUN rm -rf ud-treebanks
