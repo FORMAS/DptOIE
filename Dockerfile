@@ -26,6 +26,7 @@ RUN java -mx6g -cp "stanford-corenlp/*" edu.stanford.nlp.parser.nndep.Dependency
     -devFile ud-treebanks/UD_Portuguese-BR/pt_br-ud-dev.conllu \
     -testFile ud-treebanks/UD_Portuguese-BR/pt_br-ud-test.conllu \
     -model pt-models/pt-dep-parser.gz \
+    -maxIter 5000 \
     -trainingThreads 2
 
 RUN rm -rf ud-treebanks
@@ -44,7 +45,6 @@ RUN java -mx6g -cp "stanford-corenlp/*" edu.stanford.nlp.tagger.maxent.MaxentTag
     -devFile ud-treebanks/UD_Portuguese-BR/pt_br-ud-dev.conllu \
     -testFile ud-treebanks/UD_Portuguese-BR/pt_br-ud-test.conllu \
     -model pt-models/pt-pos-tagger.model \
-    -maxIter 10000 \
     -arch generic \
     -nthreads 2
 
