@@ -12,13 +12,13 @@ jobs:
           DOCKER_BUILDKIT=1 docker build --target train_model_dep_parser --tag train_model_dep_parser .
           docker create --name train_model_dep_parser train_model_dep_parser
           mkdir -p build
-          docker cp train_model_dep_parser:/home/app/pt-models ./pt-models
+          docker cp train_model_dep_parser:/home/app/pt-models/pt-dep-parser.gz ./build/pt-dep-parser.gz
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
         with:
           name: dep_parser
           path: |
-            pt-models/pt-dep-parser.gz
+            build/pt-dep-parser.gz
           retention-days: 1
   pos_tagger:
     runs-on: ubuntu-latest
@@ -29,13 +29,13 @@ jobs:
           DOCKER_BUILDKIT=1 docker build --target train_model_pos_tagger --tag train_model_pos_tagger .
           docker create --name train_model_pos_tagger train_model_pos_tagger
           mkdir -p build
-          docker cp train_model_pos_tagger:/home/app/pt-models ./pt-models
+          docker cp train_model_pos_tagger:/home/app/pt-models/pt-pos-tagger.model ./build/pt-pos-tagger.model
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
         with:
           name: pos_tagger
           path: |
-            pt-models/pt-pos-tagger.model
+            build/pt-pos-tagger.model
           retention-days: 1
   release:
     needs: [dep_parser, pos_tagger]
@@ -58,5 +58,5 @@ jobs:
           automatic_release_tag: "models"
           title: "DptOIE models"
           files: |
-            pt-models/pt-dep-parser.gz
-            pt-models/pt-pos-tagger.model
+            dep_parser/pt-dep-parser.gz
+            pos_tagger/pt-pos-tagger.model
