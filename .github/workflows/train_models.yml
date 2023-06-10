@@ -58,5 +58,5 @@ jobs:
           automatic_release_tag: "models"
           title: "DptOIE models"
           files: |
-            dep_parser/pt-dep-parser.gz
-            pos_tagger/pt-pos-tagger.model
+            pt-dep-parser.gz
+            pt-pos-tagger.model
