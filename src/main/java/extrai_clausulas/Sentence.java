@@ -82,11 +82,10 @@ public class Sentence {
 
         /*No pre-processamento quando o DP é executado o Upos e Xpos ficam iguais de novo. Esse trecho do código é 
          responsável por fazer a alteração necessária*/
-        PreProcessamento p = new PreProcessamento();
         for (Sentence sentence : sentences) {
             for (Token t : sentence.getSentenca()) {
 //                System.out.println(t.getForm() + " " + p.mapeamentoTokenPosTagger(t.getCpostag()));
-                t.setCpostag(p.mapeamentoTokenPosTagger(t.getCpostag()));
+                t.setCpostag(PreProcessamento.mapeamentoTokenPosTagger(t.getCpostag()));
             }
         }
 

@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 //import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import pre_processamento.PreProcessamento;
 
@@ -74,8 +75,16 @@ public class Main {
         ArrayList<Sentence> sentences = new ArrayList<>();
 //        String caminhoTreebankFileIn = "C:\\Users\\Leandro\\Documents\\boilerpipe-master\\ExtraiClausulas\\saida\\saidaDP_testes.conll";
         String caminhoTreebankFileIn;
+
+        //iniciar o contador do tempo total
+        long startTime = System.nanoTime();
+
         if (dependencTreeIN.equals("")) {
             PreProcessamento preProcessamento = new PreProcessamento();
+
+            // reinicia o contador do tempo total para desconsiderar o tempo de carregamento do modelo na memória
+            startTime = System.nanoTime();
+
             /*Gera arquivo com setenças tokenizadas separadas por espaço. Cada linha do arquivo corresponde a uma sentença*/
             preProcessamento.retornaTokensSentencasSeparadoPorEspaco(sentencesIn);
             /*Gera arquivo conll para dar entrada ao Dependency parser*/
@@ -86,9 +95,6 @@ public class Main {
         } else {
             caminhoTreebankFileIn = dependencTreeIN;
         }
-
-        long startTime = System.nanoTime();
-
 
         carregaSentencasFormatoConll.loadData(caminhoTreebankFileIn, sentences);
         for (Sentence s : sentences) {
@@ -281,8 +287,8 @@ public class Main {
         }
 
         long endTime   = System.nanoTime();
-        long totalTime = endTime - startTime;
-        System.out.println("Tempo de execução: " + totalTime/1000 + " segundos");
+        double totalTime = (double) (endTime - startTime) / 1_000_000_000;
+        System.out.println("Tempo de execução: " + totalTime + " segundos");
 
         writer.flush();
         writer.close();

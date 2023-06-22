@@ -66,6 +66,9 @@ public class PreProcessamento {
     private String caminhoModeloDP;
     /*------------------*/
 
+    private final DependencyParser parser;
+
+
     public PreProcessamento() {
         sentencasSemProcessamento = new ArrayList<>();
         tokensSentencasSemProcessamento = new ArrayList<>();
@@ -78,6 +81,8 @@ public class PreProcessamento {
         arquivoSentencasTokenizadas = diretorioSaidaTokenizerPosDp + "tokenized_sentences";
         arquivoSentencasEntradaDPConll = diretorioSaidaTokenizerPosDp + "imput_DP.txt";
         arquivoSaidaDP = diretorioSaidaTokenizerPosDp + "output_DP.conll";
+
+        parser = loadDependencyParser(caminhoModeloDP);
     }
 
     public static void main(String Args[]) throws IOException {
@@ -92,6 +97,15 @@ public class PreProcessamento {
 //        preProcessamento.retornaPos(preProcessamento.caminhoModeloPos, sentenca);
     }
 
+    public static DependencyParser loadDependencyParser(String modelo) {
+        Properties props = new Properties();
+        DependencyParser dp = new DependencyParser(props);
+        System.out.println("Loading Dependency Parser in memory...");
+        //Carrega modelo treinado
+        dp.loadModelFile(modelo);
+        System.out.println("Dependency Parser loaded!");
+        return dp;
+    }
 
     /*Esta função gera um arquivo com sentenças tokenizadas separadas por espaço e armazena as sentenças brutas em uma
      variável*/
@@ -188,17 +202,12 @@ public class PreProcessamento {
     }
 
     public void dependencyParser(String modelo, String arquivoEntradaDP) throws FileNotFoundException {
-        Properties props = new Properties();
         String saidaDP = arquivoSaidaDP;
-        DependencyParser dp = new DependencyParser(props);
-        System.out.println("Loading Dependency Parser in memory...");
-        //Carrega modelo treinado
-        dp.loadModelFile(modelo);
         System.out.println("Executing Dependency Parser from Sentences...");
         //Gera saída no formato conll e mostra resultados LAS se for um arquivo de teste
         /*Foi utilizada a função de teste do DP porque ainda não encontrei uma forma de colocar a saída em
          conll de outra forma.*/
-        dp.testCoNLL(arquivoEntradaDP, saidaDP);
+        parser.testCoNLL(arquivoEntradaDP, saidaDP);
         System.out.println("Execution of Dependency Parser completed.");
     }
 
@@ -300,7 +309,7 @@ public class PreProcessamento {
         return linhaConll;
     }
 
-    public String mapeamentoTokenPosTagger(String posToken) {
+    public static String mapeamentoTokenPosTagger(String posToken) {
         Map<String, String> map = new HashMap<>();
         map.put(".", "PUNCT");
         map.put("PNOUN", "PROPN");
