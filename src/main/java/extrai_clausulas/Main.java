@@ -86,6 +86,10 @@ public class Main {
         } else {
             caminhoTreebankFileIn = dependencTreeIN;
         }
+
+        long startTime = System.nanoTime();
+
+
         carregaSentencasFormatoConll.loadData(caminhoTreebankFileIn, sentences);
         for (Sentence s : sentences) {
             s.mapeamentoSentences();
@@ -275,6 +279,11 @@ public class Main {
             }
             flagIndicaSeImpressaoArquivoTemSentecaOuNao = false;
         }
+
+        long endTime   = System.nanoTime();
+        long totalTime = endTime - startTime;
+        System.out.println("Tempo de execução: " + totalTime/1000 + " segundos");
+
         writer.flush();
         writer.close();
     }
