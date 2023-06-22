@@ -1,4 +1,4 @@
-name: build
+name: Build, test and release
 
 on:
   push:
@@ -15,11 +15,11 @@ jobs:
       - uses: actions/checkout@v3
       - name: Build container
         run: |
-          DOCKER_BUILDKIT=1 docker build --build-arg GITHUB_REPOSITORY=$GITHUB_REPOSITORY --target build --tag dptoie .
+          DOCKER_BUILDKIT=1 docker build --build-arg GITHUB_REPOSITORY=$GITHUB_REPOSITORY --target runtime --tag dptoie .
           docker create --name dptoie dptoie
           mkdir -p build
           docker cp dptoie:/home/app/pt-models ./build/
-          docker cp dptoie:/home/app/target/ExtraiClausulas-1.0-SNAPSHOT-jar-with-dependencies.jar ./build/DptOIE.jar
+          docker cp dptoie:/usr/local/lib/DptOIE.jar ./build/DptOIE.jar
           mkdir -p build/output
           cd build
           zip DptOIE.zip -r output pt-models DptOIE.jar
