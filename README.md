@@ -67,4 +67,4 @@ If you find this repo helpful, please consider citing:
 }
 ```
 
-* GLAUBER, R. ; CLARO, D. B. ; OLIVEIRA, L. S. . Dependency Parser on Open Information Extraction for Portuguese Texts - DptOIE and DependentIE on IberLEF. In: Iberian Languages Evaluation Forum (IberLEF 2019), 2019, Bilbao, Spain. Proceedings of the Iberian Languages Evaluation Forum (IberLEF 2019) co-located with 35th Conference of the Spanish Society for Natural Language Processing (SEPLN 2019). Bilbao: CEUR, 2019. v. 2421. p. 442-448.
+* 	Leandro Oliveira, Daniela Barreiro Claro, Marlo Souza: DptOIE: a Portuguese open information extraction based on dependency analysis. Artif. Intell. Rev. 56(7): 7015-7046 (2023).
