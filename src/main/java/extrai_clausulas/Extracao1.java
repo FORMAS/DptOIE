@@ -100,15 +100,15 @@ public class Extracao1 {
                     for (int i = 0; i < elementoPilha.getTokensFilhos().size(); i++) {
                         tokenPilha = elementoPilha.getTokensFilhos().get(i);//filho de elementoPilha
                         if (!vetorBooleanoTokensVisitados[tokenPilha.getId()]) {
-                            if (tokenPilha.getDeprel().equals("nummod") || tokenPilha.getDeprel().equals("advmod") || (tokenPilha.getDeprel().equals("appos") && tokenPilha.getPostag().equals("NUM")) || ((tokenPilha.getDeprel().equals("nmod") || tokenPilha.getDeprel().equals("amod") || tokenPilha.getDeprel().equals("dep") || tokenPilha.getDeprel().equals("obj"))/* && tokenPilha.getId() > tokenSentenca.getId()*/) || tokenPilha.getDeprel().contains("det") || tokenPilha.getDeprel().equals("case") || (tokenPilha.getDeprel().equals("punct") && pontuacaoValida(tokenPilha))) {
-                                pilhaAuxiliar.push(tokenPilha);//System.out.println(tokenPilha.getForm());
-                                adicionaPedacoSujeitoRelacao(sr, tokenPilha, vetorBooleanoTokensVisitados, 0);
-                                vetorBooleanoTokensVisitados[tokenPilha.getId()] = true;
-                                elementoPilha = new Token();
-                                elementoPilha.setTokensFilhos(tokenPilha.getTokensFilhos());
-                                i = -1;//deve ser -1, pois quando entrar no for ele vai incrementar argumentoVerboLigacao variável, fazendo com que o valor dela fique zero (i = i+1)
-                            } else if (tokenPilha.getDeprel().equals("conj") && !tokenPilha.getPostag().equals("VERB")) {
-//                                indiceArraySujeitoRelacaoArgumentos = trataCasoEspecialSujeitoComConjuncao(pilhaAuxiliar, tokenPilha, indiceArraySujeitoRelacaoArgumentos, tokenSentenca.getId(), vetorBooleanoTokensVisitados);
+                            if (tokenPilha.getDeprel().equals("nummod")
+                                    || tokenPilha.getDeprel().equals("advmod")
+                                    || (tokenPilha.getDeprel().equals("appos") && tokenPilha.getPostag().equals("NUM"))
+                                    || ((tokenPilha.getDeprel().equals("nmod") || tokenPilha.getDeprel().equals("amod") || tokenPilha.getDeprel().equals("dep") || tokenPilha.getDeprel().equals("obj"))/* && tokenPilha.getId() > tokenSentenca.getId()*/)
+                                    || tokenPilha.getDeprel().contains("det")
+                                    || tokenPilha.getDeprel().equals("case")
+                                    || (tokenPilha.getDeprel().equals("punct") && pontuacaoValida(tokenPilha))
+                                    || (tokenPilha.getDeprel().equals("conj") && !tokenPilha.getPostag().equals("VERB"))
+                            ) {
                                 pilhaAuxiliar.push(tokenPilha);//System.out.println(tokenPilha.getForm());
                                 adicionaPedacoSujeitoRelacao(sr, tokenPilha, vetorBooleanoTokensVisitados, 0);
                                 vetorBooleanoTokensVisitados[tokenPilha.getId()] = true;
