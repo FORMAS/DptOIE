@@ -1,0 +1,20 @@
+services:
+  build:
+    image: dptoie-base
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: build
+    volumes:
+      - .:/home/app
+  runtime:
+    image: dptoie-runtime
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: runtime
+      args:
+        - GITHUB_REPOSITORY=andrewalkermo/DptOIE
+    volumes:
+      - .:/home/app
+    command: 'java -jar /usr/local/lib/DptOIE.jar -SC true -appositive 2 -CC true -sentencesIN /home/app/inputs/teste.txt'
