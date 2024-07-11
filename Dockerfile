@@ -83,4 +83,3 @@ RUN if [ ! -f ./pt-models/pt-dep-parser.gz ] || [ ! -f pt-models/pt-pos-tagger.m
     fi
 
 EXPOSE 8080
-ENTRYPOINT ["java","-jar","/usr/local/lib/DptOIE.jar"]
