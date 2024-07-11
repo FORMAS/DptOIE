@@ -543,7 +543,14 @@ public class Extracao1 {
                         if (!vetorBooleanoTokensVisitados[tokenPilha.getId()]) {
                             //if (tokenPilha.getDeprel().equals("nmod") || tokenPilha.getDeprel().equals("nummod") || tokenPilha.getDeprel().equals("advmod") || tokenPilha.getDeprel().equals("appos") || tokenPilha.getDeprel().equals("amod") || tokenPilha.getDeprel().equals("dep") || tokenPilha.getDeprel().equals("obj")) {
                             if (tokenPilha.getId() < novoSujeitoSubstituiPronomeRelativo.getId()) {
-                                if (tokenPilha.getDeprel().equals("dep") || tokenPilha.getDeprel().equals("obj") || tokenPilha.getDeprel().equals("nummod") || tokenPilha.getDeprel().equals("advmod") || tokenPilha.getDeprel().equals("det") || tokenPilha.getDeprel().equals("case") || (tokenPilha.getDeprel().equals("punct") && !tokenPilha.getForm().equals(","))) {
+                                if (tokenPilha.getDeprel().equals("dep")
+                                        || tokenPilha.getDeprel().equals("obj")
+                                        || tokenPilha.getDeprel().equals("nummod")
+                                        || tokenPilha.getDeprel().equals("advmod")
+                                        || tokenPilha.getDeprel().equals("det")
+                                        || tokenPilha.getDeprel().equals("case")
+                                        || (tokenPilha.getDeprel().equals("punct") && !tokenPilha.getForm().equals(","))
+                                ) {
                                     pilhaAuxiliar.push(tokenPilha);
                                     adicionaPedacoSujeitoRelacao(sr, tokenPilha, vetorBooleanoTokensVisitados, 0);
                                     vetorBooleanoTokensVisitados[tokenPilha.getId()] = true;
@@ -552,7 +559,18 @@ public class Extracao1 {
                                     i = -1;//deve ser -1, pois quando entrar no for ele vai incrementar argumentoVerboLigacao variável, fazendo com que o valor dela fique zero (i = i+1)
                                 }
                             } else {
-                                if (tokenPilha.getDeprel().equals("nummod") || (tokenPilha.getDeprel().equals("conj") && !heuristicasVerificaConjRelacao(tokenPilha)) || tokenPilha.getDeprel().equals("advmod") || (tokenPilha.getDeprel().equals("appos") && tokenPilha.getPostag().equals("NUM")) || ((tokenPilha.getDeprel().equals("nmod") || tokenPilha.getDeprel().equals("amod") || tokenPilha.getDeprel().equals("dep") || tokenPilha.getDeprel().equals("obj")) && tokenPilha.getId() > novoSujeitoSubstituiPronomeRelativo.getId()) || tokenPilha.getDeprel().equals("det") || tokenPilha.getDeprel().equals("case") || (tokenPilha.getDeprel().equals("punct") && pontuacaoValida(tokenPilha))) {
+                                if (tokenPilha.getDeprel().equals("nummod")
+                                        || (tokenPilha.getDeprel().equals("conj") && !heuristicasVerificaConjRelacao(tokenPilha))
+                                        || tokenPilha.getDeprel().equals("advmod")
+                                        || (tokenPilha.getDeprel().equals("appos") && tokenPilha.getPostag().equals("NUM"))
+                                        || ((tokenPilha.getDeprel().equals("nmod")
+                                        || tokenPilha.getDeprel().equals("amod")
+                                        || tokenPilha.getDeprel().equals("dep")
+                                        || tokenPilha.getDeprel().equals("obj")) && tokenPilha.getId() > novoSujeitoSubstituiPronomeRelativo.getId())
+                                        || tokenPilha.getDeprel().equals("det")
+                                        || tokenPilha.getDeprel().equals("case")
+                                        || (tokenPilha.getDeprel().equals("punct") && pontuacaoValida(tokenPilha))
+                                ) {
                                     pilhaAuxiliar.push(tokenPilha);
                                     adicionaPedacoSujeitoRelacao(sr, tokenPilha, vetorBooleanoTokensVisitados, 0);
 //                                    System.out.println(tokenPilha.getForm());
