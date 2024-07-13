@@ -284,10 +284,20 @@ public class Extracao1 {
                 for (int i = 0; i < elementoPilha.getTokensFilhos().size(); i++) {
                     tokenPilha = elementoPilha.getTokensFilhos().get(i);//filho de elementoPilha
                     if (!vetorBooleanoTokensVisitados[tokenPilha.getId()]) {
-                        if ((tokenPilha.getId() < sr.getIndiceNucleoRelacao() && tokenPilha.getId() > sr.getIndiceNucleoSujeito() && sr.getIndiceNucleoSujeito() < sr.getIndiceNucleoRelacao()) || (tokenPilha.getId() < sr.getIndiceNucleoRelacao() && tokenPilha.getId() < sr.getIndiceNucleoSujeito() && sr.getIndiceNucleoSujeito() > sr.getIndiceNucleoRelacao())) {
-                            if ((tokenPilha.getDeprel().equals("aux:pass") || (tokenPilha.getDeprel().equals("obj")) || (tokenPilha.getDeprel().equals("iobj")) || (tokenPilha.getDeprel().equals("advmod")) || (tokenPilha.getDeprel().equals("cop")) || tokenPilha.getDeprel().equals("aux") || tokenPilha.getDeprel().equals("expl:pv") || tokenPilha.getDeprel().equals("mark") || (tokenPilha.getDeprel().equals("punct") && (!tokenPilha.getForm().equals(",") || !tokenPilha.getForm().equals("--"))))) {
+                        if ((tokenPilha.getId() < sr.getIndiceNucleoRelacao() && tokenPilha.getId() > sr.getIndiceNucleoSujeito() && sr.getIndiceNucleoSujeito() < sr.getIndiceNucleoRelacao())
+                                        || (tokenPilha.getId() < sr.getIndiceNucleoRelacao() && tokenPilha.getId() < sr.getIndiceNucleoSujeito() && sr.getIndiceNucleoSujeito() > sr.getIndiceNucleoRelacao())
+                        ) {
+                            if (tokenPilha.getDeprel().equals("aux:pass")
+                                    || tokenPilha.getDeprel().equals("obj")
+                                    || tokenPilha.getDeprel().equals("iobj")
+                                    || tokenPilha.getDeprel().equals("advmod")
+                                    || tokenPilha.getDeprel().equals("cop")
+                                    || tokenPilha.getDeprel().equals("aux")
+                                    || tokenPilha.getDeprel().equals("expl:pv")
+                                    || tokenPilha.getDeprel().equals("mark")
+                                    || (tokenPilha.getDeprel().equals("punct") && (!tokenPilha.getForm().equals(",") || !tokenPilha.getForm().equals("--")))
+                            ) {
                                 pilhaAuxiliar.push(tokenPilha);
-//                            System.out.println("push: "+tokenPilha.getForm());
                                 adicionaPedacoSujeitoRelacao(sr, tokenPilha, vetorBooleanoTokensVisitados, 1);
                                 flagExtracao = true;
                                 vetorBooleanoTokensVisitados[tokenPilha.getId()] = true;
@@ -299,7 +309,6 @@ public class Extracao1 {
                         if (tokenPilha.getId() > paiSujeito.getId()) {
                             if (tokenPilha.getDeprel().equals("flat") || tokenPilha.getDeprel().equals("expl:pv") || (tokenPilha.getDeprel().equals("punct") && tokenPilha.getForm().equals("-"))) {
                                 pilhaAuxiliar.push(tokenPilha);
-//                                System.out.println("push: " + tokenPilha.getForm());
                                 adicionaPedacoSujeitoRelacao(sr, tokenPilha, vetorBooleanoTokensVisitados, 1);
                                 flagExtracao = true;
                                 vetorBooleanoTokensVisitados[tokenPilha.getId()] = true;
@@ -370,7 +379,6 @@ public class Extracao1 {
                         if ((tokenPilha.getId() < sr.getIndiceNucleoRelacao() && tokenPilha.getId() > sr.getIndiceNucleoSujeito() && sr.getIndiceNucleoSujeito() < sr.getIndiceNucleoRelacao()) || (tokenPilha.getId() < sr.getIndiceNucleoRelacao() && tokenPilha.getId() < sr.getIndiceNucleoSujeito() && sr.getIndiceNucleoSujeito() > sr.getIndiceNucleoRelacao())) {
                             if ((tokenPilha.getDeprel().contains("aux") || (tokenPilha.getDeprel().equals("obj")) || (tokenPilha.getDeprel().equals("iobj")) || (tokenPilha.getDeprel().equals("advmod")) || (tokenPilha.getDeprel().equals("cop")) || tokenPilha.getDeprel().equals("aux") || tokenPilha.getDeprel().equals("expl:pv") || tokenPilha.getDeprel().equals("mark") || (tokenPilha.getDeprel().equals("punct") && (!tokenPilha.getForm().equals(",") && !tokenPilha.getForm().equals("--"))))) {
                                 pilhaAuxiliar.push(tokenPilha);
-//                                System.out.println("push: " + tokenPilha.getForm());
                                 if (flagExtracao) {
                                     adicionaPedacoSujeitoRelacao(sr, tokenPilha, vetorBooleanoTokensVisitados, 1);
                                 }
@@ -382,7 +390,6 @@ public class Extracao1 {
                         } else if (tokenPilha.getId() > paiSujeito.getId()) {
                             if (tokenPilha.getDeprel().equals("flat") || tokenPilha.getDeprel().equals("expl:pv") || (tokenPilha.getDeprel().equals("punct") && tokenPilha.getForm().equals("-"))) {
                                 pilhaAuxiliar.push(tokenPilha);
-//                                System.out.println("push: " + tokenPilha.getForm());
                                 if (flagExtracao) {
                                     adicionaPedacoSujeitoRelacao(sr, tokenPilha, vetorBooleanoTokensVisitados, 1);
                                 }
@@ -392,7 +399,6 @@ public class Extracao1 {
                                 i = -1;//deve ser -1, pois quando entrar no for ele vai incrementar argumentoVerboLigacao variável, fazendo com que o valor dela fique zero (i = i+1)
                             } else if (tokenPilha.getDeprel().equals("acl:part") && verificaAclPartPrimeiroFilhoRelacao(tokenPilha)/*&& tokenPilha.equals(elementoPilha)*/) {
                                 pilhaAuxiliar.push(tokenPilha);
-//                                System.out.println("push: " + tokenPilha.getForm());
                                 if (flagExtracao) {
                                     adicionaPedacoSujeitoRelacao(sr, tokenPilha, vetorBooleanoTokensVisitados, 1);
                                 }
@@ -407,15 +413,12 @@ public class Extracao1 {
                                     tokenPilha.setDeprel("conjCC");/*Nessa função argumentoVerboLigacao conjunção coordenada é tratada de forma diferente da buscaSujeito
                                      //por isso foi alterado o Deprel. Assim, na função para concatenar outra função será chamada */
 
-//                                    System.out.println("push: " + tokenPilha.getForm());
-//                                    System.out.println("push: " + tokenPilha.getForm());
                                     sr.setIndiceNucleoRelacao(tokenPilha.getId());
                                     adicionaPedacoSujeitoRelacao(sr, tokenPilha, vetorBooleanoTokensVisitados, 1);
                                     tokenPilha.setDeprel("conj");
                                     /*Se necessário coloca outro índice*/
                                     setNovoIndiceNucleoRelacao(tokenPilha, sr, vetorBooleanoTokensVisitados);
                                     sr.setIdentificadorModuloExtracaoRelacao(2);
-//                                    System.out.println("novo ID: " + sr.getIndiceNucleoRelacao());
                                     pilhaAuxiliar.push(tokenPilha);
                                     flagExtracao = true;
                                     vetorBooleanoTokensVisitados[tokenPilha.getId()] = true;
@@ -2417,7 +2420,23 @@ public class Extracao1 {
             if (tokenRelacaoEncontrado.getId() != tokenRelacao.getId()) {
                 for (Token tokenFilho : tokenRelacaoEncontrado.getTokensFilhos()) {
                     if (!vetorBooleanoTokensVisitados[tokenFilho.getId()] && !sr.getVetorBooleanoTokensSujeitoVisitados()[tokenFilho.getId()]) {
-                        if (tokenFilho.getDeprel().equals("nmod") || tokenFilho.getDeprel().contains("xcomp") || tokenFilho.getDeprel().equals("dobj") || tokenFilho.getDeprel().equals("obj") || tokenFilho.getDeprel().equals("iobj") || tokenFilho.getDeprel().equals("acl:relcl") || tokenFilho.getDeprel().equals("nummod") || tokenFilho.getDeprel().equals("advmod") || (tokenFilho.getDeprel().equals("appos") && !tokenFilho.getCpostag().equals("PROPN")) || tokenFilho.getDeprel().equals("amod") || (tokenFilho.getDeprel().equals("ccomp") && !verificaTokenFilhoSujeito(tokenFilho)) || (tokenFilho.getDeprel().equals("advcl") && !verificaTokenFilhoSujeito(tokenFilho)) || tokenFilho.getDeprel().equals("acl:part") || tokenFilho.getDeprel().equals("dep") || (tokenFilho.getDeprel().equals("punct") && pontuacaoValida(tokenFilho)) && (tokenFilho.getId() > tokenFilho.getHead())) {
+                        if (tokenFilho.getDeprel().equals("nmod")
+                                || tokenFilho.getDeprel().contains("xcomp")
+                                || tokenFilho.getDeprel().equals("dobj")
+                                || tokenFilho.getDeprel().equals("obj")
+                                || tokenFilho.getDeprel().equals("iobj")
+                                || tokenFilho.getDeprel().equals("acl:relcl")
+                                || tokenFilho.getDeprel().equals("nummod")
+                                || tokenFilho.getDeprel().equals("advmod")
+                                || (tokenFilho.getDeprel().equals("appos") && !tokenFilho.getCpostag().equals("PROPN"))
+                                || tokenFilho.getDeprel().equals("amod")
+                                    || (tokenFilho.getDeprel().equals("ccomp") && !verificaTokenFilhoSujeito(tokenFilho))
+                                || (tokenFilho.getDeprel().equals("advcl") && !verificaTokenFilhoSujeito(tokenFilho))
+                                || tokenFilho.getDeprel().equals("acl:part")
+                                || tokenFilho.getDeprel().equals("dep")
+                                || (tokenFilho.getDeprel().equals("punct") && pontuacaoValida(tokenFilho))
+                                && (tokenFilho.getId() > tokenFilho.getHead())
+                        ) {
                             sr.setIndiceNucleoRelacao(tokenRelacaoEncontrado.getId());
                             return true;
                         }
