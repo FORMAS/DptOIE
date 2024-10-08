@@ -10,3 +10,4 @@ output/*
 !output/.gitkeep
 pt-models/*
 !pt-models/.gitkeep
+/extractedFactsByDpOIE.json

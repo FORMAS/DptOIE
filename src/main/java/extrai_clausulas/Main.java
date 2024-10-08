@@ -5,6 +5,7 @@ package extrai_clausulas;
 //import java.io.BufferedWriter;
 //import java.io.File;
 //import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 //import java.io.FileWriter;
 import java.io.IOException;
@@ -70,7 +71,6 @@ public class Main {
         }
 
         int index = 0;
-        Main classeMain = new Main();
         Sentence carregaSentencasFormatoConll = new Sentence();
         ArrayList<Sentence> sentences = new ArrayList<>();
 //        String caminhoTreebankFileIn = "C:\\Users\\Leandro\\Documents\\boilerpipe-master\\ExtraiClausulas\\saida\\saidaDP_testes.conll";
@@ -102,6 +102,115 @@ public class Main {
             sentences.get(index).setSentenca(s.getSentenca());
             index++;
         }
+
+//        extrairFatosParaCSV(sentences, CC, SC, appositive);
+
+        extrairFatosParaJSON(sentences, CC, SC, appositive);
+
+        long endTime   = System.nanoTime();
+        double totalTime = (double) (endTime - startTime) / 1_000_000_000;
+        System.out.println("Tempo de execução: " + totalTime + " segundos");
+    }
+
+    public void increment(AtomicInteger i) {
+        i.set(i.get() + 1);
+    }
+
+    private static void extrairFatosParaJSON(ArrayList<Sentence> sentences, boolean CC, boolean SC, int appositive) throws IOException, CloneNotSupportedException {
+        OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream("extractedFactsByDpOIE.json"));
+        JsonOutput jsonOutput = new JsonOutput();
+        jsonOutput.appositive = appositive;
+        jsonOutput.coordinatedConjunctions = CC;
+        jsonOutput.subordinateClause = SC;
+
+        for (int indiceSentenca = 0; indiceSentenca < sentences.size(); indiceSentenca++) {
+            System.out.println("Índice sentença " + indiceSentenca);
+            Extracao1 ex = new Extracao1(sentences.get(indiceSentenca));
+            ex.realizaExtracao(CC, SC, appositive);
+            ex.imprimeExtracoes();
+
+            String sentenca = sentences.get(indiceSentenca).toString();
+            String sujeito;
+            String rel;
+            String argumento2;
+            int moduloSujeito;
+            int moduloRelacao;
+            int moduloArg2 = 0;
+            int indiceExtracao = 1;
+
+            ExtractedSentence extractedSentence = new ExtractedSentence();
+            extractedSentence.sentenceId = indiceSentenca + 1;
+            extractedSentence.sentence = sentenca;
+
+            for (SujeitoRelacaoArgumentos sra : ex.getSujeitoRelacaoArgumentos()) {
+                sujeito = sra.getSujeitoRelacao().getStringSujeitoSemMarkInicio().replace("\"", "\"\"");
+                rel = sra.getSujeitoRelacao().getStringRelacao().replace("\"", "\"\"");
+                moduloSujeito = sra.getSujeitoRelacao().getIdentificadorModuloExtracaoSujeito();
+                moduloRelacao = sra.getSujeitoRelacao().getIdentificadorModuloExtracaoRelacao();
+                for (int iCont = 0; iCont < sra.getArgumentos().size(); iCont++) {
+                    Argumento arg2 = sra.getArgumentos().get(iCont);
+                    argumento2 = arg2.toString().replace("\"", "\"\"");
+                    moduloArg2 = arg2.getIdentificadorModuloExtracao();
+                    if (arg2.getSraApontamentoCcompAdvcl() == null) {
+                        Fact fact = new Fact();
+                        fact.extractionId = indiceExtracao;
+                        fact.arg1 = sujeito;
+                        fact.rel = rel;
+                        fact.arg2 = argumento2;
+                        fact.coherence = "";
+                        fact.minimalism = "";
+                        fact.subjectModule = moduloSujeito;
+                        fact.relationModule = moduloRelacao;
+                        fact.arg2Module = moduloArg2;
+                        extractedSentence.facts.add(fact);
+                    }
+                }
+
+                if (!sra.getArgumentos().isEmpty()) {
+                    indiceExtracao++;
+                }
+
+                for (Argumento arg2 : sra.getArgumentos()) {
+                    if (arg2.getSraApontamentoCcompAdvcl() != null) {
+                        Fact fact = new Fact();
+                        fact.extractionId = indiceExtracao;
+                        fact.arg1 = sujeito;
+                        fact.rel = rel;
+                        fact.arg2 = arg2.toString() + ex.retornaStringMarkSubExtracao(arg2.getSraApontamentoCcompAdvcl().getSujeitoRelacao().getSujeito());
+                        fact.coherence = "";
+                        fact.minimalism = "";
+                        fact.subjectModule = moduloSujeito;
+                        fact.relationModule = moduloRelacao;
+                        fact.arg2Module = moduloArg2;
+                        extractedSentence.facts.add(fact);
+                        if (arg2.getSraApontamentoCcompAdvcl().getArgumentos().isEmpty()) {
+                            Fact fact2 = new Fact();
+                            fact2.extractionId = indiceExtracao + 1;
+                            fact2.arg1 = arg2.getSraApontamentoCcompAdvcl().getSujeitoRelacao().getStringSujeitoSemMarkInicio().replace("\"", "\"\"");
+                            fact2.rel = arg2.getSraApontamentoCcompAdvcl().getSujeitoRelacao().getStringRelacao().replace("\"", "\"\"");
+                            fact2.arg2 = "";
+                            fact2.coherence = "x";
+                            fact2.minimalism = "x";
+                            fact2.subjectModule = arg2.getSraApontamentoCcompAdvcl().getSujeitoRelacao().getIdentificadorModuloExtracaoSujeito();
+                            fact2.relationModule = arg2.getSraApontamentoCcompAdvcl().getSujeitoRelacao().getIdentificadorModuloExtracaoRelacao();
+                            fact2.arg2Module = arg2.getSraApontamentoCcompAdvcl().getSujeitoRelacao().getIdentificadorModuloExtracaoRelacao();
+                            extractedSentence.facts.add(fact);
+                        }
+                    }
+                }
+            }
+
+            jsonOutput.sentences.add(extractedSentence);
+
+        }
+
+        jsonOutput.exportToJson("extractedFactsByDpOIE.json");
+    }
+
+    private static void extrairFatosParaCSV(ArrayList<Sentence> sentences, boolean CC, boolean SC, int appositive) throws IOException, CloneNotSupportedException {
+
+        Main classeMain = new Main();
+
         OutputStreamWriter writer = new OutputStreamWriter(
                 new FileOutputStream("extractedFactsByDpOIE.csv")/*,
          Charset.forName("UTF-8").newEncoder()*/
@@ -286,16 +395,8 @@ public class Main {
             flagIndicaSeImpressaoArquivoTemSentecaOuNao = false;
         }
 
-        long endTime   = System.nanoTime();
-        double totalTime = (double) (endTime - startTime) / 1_000_000_000;
-        System.out.println("Tempo de execução: " + totalTime + " segundos");
-
         writer.flush();
         writer.close();
-    }
-
-    public void increment(AtomicInteger i) {
-        i.set(i.get() + 1);
     }
 
 }
@@ -325,5 +426,75 @@ class SraEArgumento {
     public void setArg(Argumento arg) {
         this.arg = arg;
     }
+}
 
+
+class JsonOutput{
+
+    boolean coordinatedConjunctions = false;
+    boolean subordinateClause = false;
+    int appositive = 0;
+    ArrayList<ExtractedSentence> sentences = new ArrayList<>();
+
+    public void exportToJson(String path) throws IOException {
+        OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(path));
+        writer.write("{\n");
+        writer.write("  \"coordinatedConjunctions\": " + coordinatedConjunctions + ",\n");
+        writer.write("  \"subordinateClause\": " + subordinateClause + ",\n");
+        writer.write("  \"appositive\": " + appositive + ",\n");
+        writer.write("  \"facts\": [\n");
+        for (int i = 0; i < sentences.size(); i++) {
+            ExtractedSentence sentence = sentences.get(i);
+            writer.write("    {\n");
+            writer.write("      \"sentenceId\": " + sentence.sentenceId + ",\n");
+            writer.write("      \"sentence\": \"" + sentence.sentence + "\",\n");
+            writer.write("      \"facts\": [\n");
+            for (int j = 0; j < sentence.facts.size(); j++) {
+                Fact fact = sentence.facts.get(j);
+                writer.write("        {\n");
+                writer.write("          \"extractionId\": " + fact.extractionId + ",\n");
+                writer.write("          \"arg1\": \"" + fact.arg1 + "\",\n");
+                writer.write("          \"rel\": \"" + fact.rel + "\",\n");
+                writer.write("          \"arg2\": \"" + fact.arg2 + "\",\n");
+                writer.write("          \"coherence\": \"" + fact.coherence + "\",\n");
+                writer.write("          \"minimalism\": \"" + fact.minimalism + "\",\n");
+                writer.write("          \"subjectModule\": " + fact.subjectModule + ",\n");
+                writer.write("          \"relationModule\": " + fact.relationModule + ",\n");
+                writer.write("          \"arg2Module\": " + fact.arg2Module + "\n");
+                writer.write("        }");
+                if (j < sentence.facts.size() - 1) {
+                    writer.write(",");
+                }
+                writer.write("\n");
+            }
+            writer.write("      ]\n");
+            writer.write("    }");
+            if (i < sentences.size() - 1) {
+                writer.write(",");
+            }
+            writer.write("\n");
+        }
+        writer.write("  ]\n");
+        writer.write("}\n");
+        writer.flush();
+        writer.close();
+    }
+}
+
+class ExtractedSentence {
+    int sentenceId;
+    String sentence;
+    ArrayList<Fact> facts = new ArrayList<>();
+}
+
+class Fact {
+    int extractionId;
+    String arg1;
+    String rel;
+    String arg2;
+    String coherence;
+    String minimalism;
+    int subjectModule;
+    int relationModule;
+    int arg2Module;
 }
