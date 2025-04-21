@@ -66,8 +66,6 @@ Vou ajustar a formatação Markdown para melhor organização e legibilidade:
 <details>
 <summary>Ver CoNLL-U</summary>
 
-![conll](imgs/o-show_conllu-tree.svg)
-
 ```conll
 1	O	_	DET	DET	_	2	det	_	_
 2	show	_	NOUN	NOUN	_	4	nsubj	_	_
@@ -93,6 +91,8 @@ Vou ajustar a formatação Markdown para melhor organização e legibilidade:
 22	.	_	.	.	_	18	punct	_	_
 
 ```
+
+![conll](imgs/o-show_conllu-tree.svg)
 
 </details>
 
