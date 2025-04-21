@@ -55,12 +55,12 @@ FROM maven:3.8.2-jdk-8-slim AS build
 
 WORKDIR /home/app
 
-COPY pom.xml /home/app
-RUN mvn dependency:go-offline
+COPY pom.xml .
+RUN mvn -B dependency:go-offline
 
-COPY src /home/app/src
+COPY src ./src
 RUN rm -rf /home/app/target
-RUN mvn -f /home/app/pom.xml clean package
+RUN mvn package
 
 FROM openjdk:8-jre-slim AS runtime
 COPY --from=build /home/app/target/ExtraiClausulas-1.0-SNAPSHOT-jar-with-dependencies.jar /usr/local/lib/DptOIE.jar
