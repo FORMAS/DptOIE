@@ -103,7 +103,7 @@ public class Main {
             index++;
         }
 
-//        extrairFatosParaCSV(sentences, CC, SC, appositive);
+        extrairFatosParaCSV(sentences, CC, SC, appositive);
 
         extrairFatosParaJSON(sentences, CC, SC, appositive);
 
@@ -117,7 +117,7 @@ public class Main {
     }
 
     private static void extrairFatosParaJSON(ArrayList<Sentence> sentences, boolean CC, boolean SC, int appositive) throws IOException, CloneNotSupportedException {
-        OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream("extractedFactsByDpOIE.json"));
+        OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream("output/extractedFactsByDpOIE.json"));
         JsonOutput jsonOutput = new JsonOutput();
         jsonOutput.appositive = appositive;
         jsonOutput.coordinatedConjunctions = CC;
@@ -153,7 +153,7 @@ public class Main {
                     moduloArg2 = arg2.getIdentificadorModuloExtracao();
                     if (arg2.getSraApontamentoCcompAdvcl() == null) {
                         Fact fact = new Fact();
-                        fact.extractionId = indiceExtracao;
+                        fact.extractionId = indiceExtracao + ".0";
                         fact.arg1 = sujeito;
                         fact.rel = rel;
                         fact.arg2 = argumento2;
@@ -165,15 +165,12 @@ public class Main {
                         extractedSentence.facts.add(fact);
                     }
                 }
-
-                if (!sra.getArgumentos().isEmpty()) {
-                    indiceExtracao++;
-                }
+                int indiceSubExtracao = 0;
 
                 for (Argumento arg2 : sra.getArgumentos()) {
                     if (arg2.getSraApontamentoCcompAdvcl() != null) {
                         Fact fact = new Fact();
-                        fact.extractionId = indiceExtracao;
+                        fact.extractionId = indiceExtracao + "." + indiceSubExtracao++;
                         fact.arg1 = sujeito;
                         fact.rel = rel;
                         fact.arg2 = arg2.toString() + ex.retornaStringMarkSubExtracao(arg2.getSraApontamentoCcompAdvcl().getSujeitoRelacao().getSujeito());
@@ -185,7 +182,7 @@ public class Main {
                         extractedSentence.facts.add(fact);
                         if (arg2.getSraApontamentoCcompAdvcl().getArgumentos().isEmpty()) {
                             Fact fact2 = new Fact();
-                            fact2.extractionId = indiceExtracao + 1;
+                            fact2.extractionId = indiceExtracao + "." + indiceSubExtracao++;
                             fact2.arg1 = arg2.getSraApontamentoCcompAdvcl().getSujeitoRelacao().getStringSujeitoSemMarkInicio().replace("\"", "\"\"");
                             fact2.rel = arg2.getSraApontamentoCcompAdvcl().getSujeitoRelacao().getStringRelacao().replace("\"", "\"\"");
                             fact2.arg2 = "";
@@ -194,17 +191,22 @@ public class Main {
                             fact2.subjectModule = arg2.getSraApontamentoCcompAdvcl().getSujeitoRelacao().getIdentificadorModuloExtracaoSujeito();
                             fact2.relationModule = arg2.getSraApontamentoCcompAdvcl().getSujeitoRelacao().getIdentificadorModuloExtracaoRelacao();
                             fact2.arg2Module = arg2.getSraApontamentoCcompAdvcl().getSujeitoRelacao().getIdentificadorModuloExtracaoRelacao();
-                            extractedSentence.facts.add(fact);
+                            extractedSentence.facts.add(fact2);
                         }
                     }
                 }
+
+                if (!sra.getArgumentos().isEmpty()) {
+                    indiceExtracao++;
+                }
+
             }
 
             jsonOutput.sentences.add(extractedSentence);
 
         }
 
-        jsonOutput.exportToJson("extractedFactsByDpOIE.json");
+        jsonOutput.exportToJson("output/extractedFactsByDpOIE.json");
     }
 
     private static void extrairFatosParaCSV(ArrayList<Sentence> sentences, boolean CC, boolean SC, int appositive) throws IOException, CloneNotSupportedException {
@@ -212,7 +214,7 @@ public class Main {
         Main classeMain = new Main();
 
         OutputStreamWriter writer = new OutputStreamWriter(
-                new FileOutputStream("extractedFactsByDpOIE.csv")/*,
+                new FileOutputStream("output/extractedFactsByDpOIE.csv")/*,
          Charset.forName("UTF-8").newEncoder()*/
         );
         writer.append(" \"ID SENTENÇA\" ; \"SENTENÇA\" ; \"ID EXTRAÇÃO\" ; \"ARG1\" ; \"REL\" ; \"ARG2\" ; \"COERÊNCIA\" ; \"MINIMALIDADE\" ; \"MÓDULO SUJEITO\" ; \"MÓDULO RELAÇÃO\" ; \"MÓDULO ARG2\";" + System.lineSeparator());
@@ -442,7 +444,7 @@ class JsonOutput{
         writer.write("  \"coordinatedConjunctions\": " + coordinatedConjunctions + ",\n");
         writer.write("  \"subordinateClause\": " + subordinateClause + ",\n");
         writer.write("  \"appositive\": " + appositive + ",\n");
-        writer.write("  \"facts\": [\n");
+        writer.write("  \"extractions\": [\n");
         for (int i = 0; i < sentences.size(); i++) {
             ExtractedSentence sentence = sentences.get(i);
             writer.write("    {\n");
@@ -488,7 +490,7 @@ class ExtractedSentence {
 }
 
 class Fact {
-    int extractionId;
+    String extractionId;
     String arg1;
     String rel;
     String arg2;

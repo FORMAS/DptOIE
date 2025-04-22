@@ -11,3 +11,6 @@ output/*
 pt-models/*
 !pt-models/.gitkeep
 /extractedFactsByDpOIE.json
+inputs/*
+!inputs/wiki-200.txt
+!inputs/ceten-200.txt
