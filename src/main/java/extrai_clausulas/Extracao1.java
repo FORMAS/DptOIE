@@ -8,11 +8,7 @@ package extrai_clausulas;
 //import java.nio.charset.Charset;
 
 import java.io.IOException;
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Deque;
-import java.util.Stack;
+import java.util.*;
 //LEMBRAR DE FAZER O MAPEAMENTO DOS NUMEROS DAS CLAUSULAS USANDO UM VETOR DE INDICES,
 
 public class Extracao1 {
@@ -50,13 +46,13 @@ public class Extracao1 {
         buscaSujeito(SC);
 //        moduloProcessamentoConjuncoesCoordenativasSujeito();
         buscaRelacao();
-        if (CC == true) {
+        if (CC) {
             moduloProcessamentoConjuncoesCoordenativasRelacao();
         }
         carregaSRA();
         extraiClausulas(SC);
         extraiClausulasQuebradas(SC);
-        if (CC == true) {
+        if (CC) {
             moduloProcessamentoConjuncoesCoordenativasArg2();
         }
         if (appositive == 1 || appositive == 2) {
@@ -74,6 +70,7 @@ public class Extracao1 {
         eliminaTokenPontuacaoErrada();
 //        deslocaClausulasNomesPropriosDaRelacaoParaArgumentos();
         excluiExtracoesRepetidas();
+
         /*OBS: SE INVERTER OS MÓDULOS DA SEQUÊNCIA PODE-SE GERAR OUTROS RESULTADOS*/
     }
 
@@ -277,65 +274,47 @@ public class Extracao1 {
             sr.setIndiceNucleoRelacao(paiSujeito.getId());
             sr.setIdentificadorModuloExtracaoRelacao(1);
             adicionaPedacoSujeitoRelacao(sr, paiSujeito, vetorBooleanoTokensVisitados, 1);
-            flagExtracao = true;
-//            System.out.println("IdRelacao: " + sr.getIndiceNucleoRelacao());
+
             while (!pilhaAuxiliar.empty()) {
                 elementoPilha = pilhaAuxiliar.peek();
                 for (int i = 0; i < elementoPilha.getTokensFilhos().size(); i++) {
                     tokenPilha = elementoPilha.getTokensFilhos().get(i);//filho de elementoPilha
                     if (!vetorBooleanoTokensVisitados[tokenPilha.getId()]) {
-                        if ((tokenPilha.getId() < sr.getIndiceNucleoRelacao() && tokenPilha.getId() > sr.getIndiceNucleoSujeito() && sr.getIndiceNucleoSujeito() < sr.getIndiceNucleoRelacao())
-                                        || (tokenPilha.getId() < sr.getIndiceNucleoRelacao() && tokenPilha.getId() < sr.getIndiceNucleoSujeito() && sr.getIndiceNucleoSujeito() > sr.getIndiceNucleoRelacao())
-                        ) {
-                            if (tokenPilha.getDeprel().equals("aux:pass")
-                                    || tokenPilha.getDeprel().equals("obj")
-                                    || tokenPilha.getDeprel().equals("iobj")
-                                    || tokenPilha.getDeprel().equals("advmod")
-                                    || tokenPilha.getDeprel().equals("cop")
-                                    || tokenPilha.getDeprel().equals("aux")
-                                    || tokenPilha.getDeprel().equals("expl:pv")
-                                    || tokenPilha.getDeprel().equals("mark")
-                                    || (tokenPilha.getDeprel().equals("punct") && (!tokenPilha.getForm().equals(",") || !tokenPilha.getForm().equals("--")))
-                            ) {
-                                pilhaAuxiliar.push(tokenPilha);
-                                adicionaPedacoSujeitoRelacao(sr, tokenPilha, vetorBooleanoTokensVisitados, 1);
-                                flagExtracao = true;
-                                vetorBooleanoTokensVisitados[tokenPilha.getId()] = true;
-                                elementoPilha = new Token();
-                                elementoPilha.setTokensFilhos(tokenPilha.getTokensFilhos());
-                                i = -1;//deve ser -1, pois quando entrar no for ele vai incrementar argumentoVerboLigacao variável, fazendo com que o valor dela fique zero (i = i+1)
-                            }
-                        }
-                        if (tokenPilha.getId() > paiSujeito.getId()) {
-                            if (tokenPilha.getDeprel().equals("flat") || tokenPilha.getDeprel().equals("expl:pv") || (tokenPilha.getDeprel().equals("punct") && tokenPilha.getForm().equals("-"))) {
-                                pilhaAuxiliar.push(tokenPilha);
-                                adicionaPedacoSujeitoRelacao(sr, tokenPilha, vetorBooleanoTokensVisitados, 1);
-                                flagExtracao = true;
-                                vetorBooleanoTokensVisitados[tokenPilha.getId()] = true;
-                                elementoPilha = new Token();
-                                elementoPilha.setTokensFilhos(tokenPilha.getTokensFilhos());
-                                i = -1;//deve ser -1, pois quando entrar no for ele vai incrementar argumentoVerboLigacao variável, fazendo com que o valor dela fique zero (i = i+1)
-                            }
-                            if (tokenPilha.getDeprel().equals("acl:part") && verificaAclPartPrimeiroFilhoRelacao(tokenPilha)/*&& tokenPilha.equals(elementoPilha)*/) {
-                                pilhaAuxiliar.push(tokenPilha);
-                                adicionaPedacoSujeitoRelacao(sr, tokenPilha, vetorBooleanoTokensVisitados, 1);
-                                flagExtracao = true;
-                                vetorBooleanoTokensVisitados[tokenPilha.getId()] = true;
-                                elementoPilha = new Token();
-                                elementoPilha.setTokensFilhos(tokenPilha.getTokensFilhos());
-                                i = -1;//deve ser -1, pois quando entrar no for ele vai incrementar argumentoVerboLigacao variável, fazendo com que o valor dela fique zero (i = i+1)
-                                //Coloca um novo núcleo para argumentoVerboLigacao relação, com o objetivo de fazer argumentoVerboLigacao busca argumentoVerboLigacao partir desse token
+                        List<String> deprelsValidos1 = Arrays.asList("aux:pass", "obj", "iobj", "advmod", "cop", "aux", "expl:pv", "mark");
+                        List<String> deprelsValidos2 = Arrays.asList("flat", "expl:pv");
+                        List<String> punctInvalidos = Arrays.asList(",", "--");
+
+                        boolean entreSujeitoERelacao = tokenPilha.getId() < sr.getIndiceNucleoRelacao()
+                                && (
+                                        (tokenPilha.getId() > sr.getIndiceNucleoSujeito() && sr.getIndiceNucleoSujeito() < sr.getIndiceNucleoRelacao())
+                                                || (tokenPilha.getId() < sr.getIndiceNucleoSujeito() && sr.getIndiceNucleoSujeito() > sr.getIndiceNucleoRelacao()));
+
+                        boolean isDeprelValido = deprelsValidos1.contains(tokenPilha.getDeprel());
+                        boolean isPunctValido = tokenPilha.getDeprel().equals("punct") && !punctInvalidos.contains(tokenPilha.getForm());
+
+                        boolean isDeprelPosSujeito = deprelsValidos2.contains(tokenPilha.getDeprel());
+                        boolean isPunctTraco = tokenPilha.getDeprel().equals("punct") && tokenPilha.getForm().equals("-");
+                        boolean isAclPartValido = tokenPilha.getDeprel().equals("acl:part") && verificaAclPartPrimeiroFilhoRelacao(tokenPilha);
+
+                        if ((entreSujeitoERelacao && (isDeprelValido || isPunctValido)) || (tokenPilha.getId() > paiSujeito.getId() && (isDeprelPosSujeito || isPunctTraco || isAclPartValido))) {
+
+                            pilhaAuxiliar.push(tokenPilha);
+                            adicionaPedacoSujeitoRelacao(sr, tokenPilha, vetorBooleanoTokensVisitados, 1);
+                            vetorBooleanoTokensVisitados[tokenPilha.getId()] = true;
+
+                            elementoPilha = new Token();
+                            elementoPilha.setTokensFilhos(tokenPilha.getTokensFilhos());
+                            i = -1; // Reinicia o loop
+
+                            // Caso especial para acl:part
+                            if (isAclPartValido) {
                                 sr.setIndiceNucleoRelacao(tokenPilha.getId());
                             }
                         }
                     }
                 }
-                if (flagExtracao) { //Entrar nesse 'IF' significa que argumentoVerboLigacao busca chegou em algum nó folha
 
-                }
                 pilhaAuxiliar.pop();
-                flagExtracao = false;
-
             }
             /*Função usada para alterar o núcleo da relação se necessário*/
             setNovoIndiceNucleoRelacao(paiSujeito, sr, vetorBooleanoTokensVisitados);
