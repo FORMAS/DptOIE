@@ -1,17 +1,12 @@
-# DptOIE and Models
-DptOIE method uses the Dependence Parser and Part of Speech Tagger models trained with Stanford CoreNLP.
+# DptOIE 
+DPToie is an Open Information Extraction method for Brazilian Portuguese language. It extracts triples based on the Universal Dependencies. 
 
+## To run
+- [Colab](https://colab.research.google.com/drive/1-vFNmw9lx2cilpTwDVAqTF_m9yeCKG8h?usp=sharing)
+- [Models](https://drive.google.com/drive/folders/1U7p3o2dvWMN0xecocCcsHh7uPmaW1Zmh?usp=drive_link)
+- Insert the file **DptOIE.jar** and **pt-models** in your directory
 
-## This project contains:
-- DptOIE's source code: An Open Information Extraction for Portuguese language.
-- Dependence Parser and Part of Speech Tagger models trained with Stanford CoreNLP.
-
-## Prerequisites to run from source code
-- [Dataset CETEN200, WIKI200 and models](https://drive.google.com/file/d/11ktTybvwMBAVWch4ZKaGSkO22q_iTBKK/view?usp=sharing)
-- Insert the file **pt-dep-parser.gz** in **pt-models** directory
-- Import as Maven Project in Eclipse IDE
-
-## How to use
+## How to use the single Java
 To run the DptOIE.jar
 ```
  java -jar DptOIE.jar -sentencesIN **sentences_file_path**
@@ -32,7 +27,7 @@ To apply transitivity
 ```
 -appositive 2
 ```
-DptOIE is independent of dependency parser, so it can receive annotated sentences with other dependency parsers, as long as they are in ConLL-U format with the same tagsets of [the Google treebank Treebanks Universal V2,1](https://lindat.mff.cuni.cz/repository/xmlui/handle/11234/1-2515#show-files).
+DptOIE is can receive CONLL-U format to annotate the sentences with the dependency parser. 
 
 To run DptOIE from a dependency tree in ConLL-U format
 ```
@@ -44,6 +39,7 @@ java -jar DptOIE.jar -sentencesIN 'sentences_file_path' -dependencyTreeIN 'depen
 ## Authors
 * Leandro Souza de Oliveira
 * [Daniela Barreiro Claro](http://formas.ufba.br/dclaro/)
+* [Oliveira, L. and Claro, D. B. and Souza, M. DptOIE: a Portuguese open information extraction based on dependency analysis. ARTIFICIAL INTELLIGENCE REVIEW, v. 56, p. 7015-7046, 2023](https://dl.acm.org/doi/abs/10.1007/s10462-022-10349-4)
 
 ## How to cite
 If you find this repo helpful, please consider citing:
