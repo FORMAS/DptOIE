@@ -4,10 +4,11 @@ DPToie is an Open Information Extraction method for Brazilian Portuguese languag
 ## To run
 - [Colab](https://colab.research.google.com/drive/1-vFNmw9lx2cilpTwDVAqTF_m9yeCKG8h?usp=sharing)
 - [Models](https://drive.google.com/drive/folders/1U7p3o2dvWMN0xecocCcsHh7uPmaW1Zmh?usp=drive_link)
-- Insert the file **DptOIE.jar** and **pt-models** in your directory
 
 ## How to use the single Java
 To run the DptOIE.jar
+- Insert the file **DptOIE.jar** and **pt-models** in your directory
+
 ```
  java -jar DptOIE.jar -sentencesIN **sentences_file_path**
 ```
