@@ -44,6 +44,7 @@ java -jar DptOIE.jar -sentencesIN 'sentences_file_path' -dependencyTreeIN 'depen
 
 ## How to cite
 If you find this repo helpful, please consider citing:
+* 	Leandro Oliveira, Daniela Barreiro Claro, Marlo Souza: DptOIE: a Portuguese open information extraction based on dependency analysis. Artif. Intell. Rev. 56(7): 7015-7046 (2023).
 ```
 @article{DBLP:journals/air/OliveiraCS23,
   author       = {Leandro Oliveira and
@@ -64,4 +65,4 @@ If you find this repo helpful, please consider citing:
 }
 ```
 
-* 	Leandro Oliveira, Daniela Barreiro Claro, Marlo Souza: DptOIE: a Portuguese open information extraction based on dependency analysis. Artif. Intell. Rev. 56(7): 7015-7046 (2023).
+
